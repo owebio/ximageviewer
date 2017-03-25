@@ -87,7 +87,9 @@ imageElem.id  = "image-source";
 screen.appendChild(imageElem);
 imageElem.src = imageSRC;
 imageElem.onload = function() {
-  _imageSize = {w:this.width, h: this.height, r:this.width/this.height};
+  var source = $("#image-source");
+  var width = source.width(), height = source.height();
+  _imageSize = {w:width, h: height, r:width/height};
   imageElem.removeAttribute('width');imageElem.removeAttribute('height');
   setTimeout(function() {
     // FIX IE BUGGY : AUTO ADDED PROPERTIES
