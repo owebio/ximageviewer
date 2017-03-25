@@ -126,6 +126,12 @@ body #doc-photo {}
     max-width: 220px;
     max-height: 200px;
   }
+
+  #full-close-bt {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+  }
 }
 #imageViewFull {
   display:none;
@@ -162,8 +168,8 @@ body #doc-photo {}
 
 #full-close-bt {
   position: fixed;
-  top: 20px;
-  right: 25px;
+  top: 15px;
+  right: 15px;
   font-family:'Roboto', sans-serif;
   font-size: 32px;
   line-height: 45px;
