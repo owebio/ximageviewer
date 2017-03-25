@@ -1,8 +1,10 @@
 @import url(//fonts.googleapis.com/earlyaccess/notosanskr.css); /* 'Noto Sans KR' */
 @import url(//fonts.googleapis.com/css?family=Roboto:100,400);
-html,body, #doc-photo, #image-screen {height:100%; margin:0;padding:0}
-html {overflow:hidden}
-html.ready {overflow:auto; -webkit-overflow-scrolling: touch;}
+html, body, #doc-photo, #image-screen {height:100%; margin:0;padding:0}
+body {}
+html {width:100%;height:100%;overflow:hidden}
+html.ready {overflow:auto}
+html.ready body {overflow:auto; -webkit-overflow-scrolling: touch;}
 body {background:#000; font-family: 'Noto Sans KR', sans-serif}
 body #doc-photo {}
 #doc-photo {position:relative;color:#E7E7E7;text-shadow: 1px 1px #797979}
