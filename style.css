@@ -100,7 +100,7 @@ body #doc-photo {}
 }
 #image-hd i {transition:all 600ms 300ms ease-in; opacity:0}
 .ready #image-hd i {opacity:1}
-#img-tt {transition:all 900ms 100ms ease-in;margin-left:50px;opacity:0;letter-spacing:3px}
+#img-tt {transition:all 900ms 100ms ease-in;margin-left:15px;opacity:0;letter-spacing:6px}
 .ready #img-tt {margin-left:0;opacity:1;letter-spacing:0}
 
 @media only screen and (min-width: 569px) {
