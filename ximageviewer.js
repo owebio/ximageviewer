@@ -3,6 +3,7 @@ var imageCollection = [
   {title: 'Cuba', src: "sample/sample_cuba.jpg"},
   {title: 'Thailand', src: "sample/sample_thailand.jpg"},
   {title: 'HongKong', src: "sample/hongkong.jpg"},
+  {title: 'Ankor Wat', src: "sample/sample_cambodia.jpg"},
   {title: 'Seoul', src: "sample/sample_mask.jpg"},
   {title: 'Casa Milà', src: "sample/sample_barcelona.jpg"},
   {title: 'La Grande Arche', src: "sample/sample_paris.jpg"},
