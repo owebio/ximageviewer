@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge;" />
+  <meta name="viewport" content="width=device-width, user-scalable=no">
+  <title> ximageviewer </title>
+  <meta http-equiv="X-UA-Compatible" content="IE=11; IE=10; IE=9;"/>
+  <style>
+ 
+  /* RESET DEFAULT CSS */
+  html, body, img, p, ul, ol, li, frame {margin:0;padding:0}
+  img {border:0}
+  a   {color:#EBEBEB}
+  #xiv-hd a {text-decoration:none}
+
+  /* HTML, BODY */
+  html, body, #xiv, #xiv-guider, #xiv-content, #image-screen {height:100%}
+  html {}
+  body {position:relative;}
+  body {-webkit-overflow-scrolling: touch;}
+  body {font: 'Noto Sans KR', sans-serif}
+  body {background: #000;color:#EBEBEB;text-shadow:0 0 10px #000, 1px 1px #1C1C1C, 0 0 1px #000}
+  #xiv-screen-image {position:absolute; top:50%;left:50%}
+
+  /* 
+     USING BACKGROUND IS BEST AT ALL!
+     translate, minus margin : scroll bar problem;
+  */
+
+  #container {min-height:100%;min-width:100%;background-position:center; background-repeat: no-repeat;}
+  #xnavigator {position:fixed;top:15px;left:15px;border:2px solid #1C1C1C;width:20vw;}
+  #nav-viewport {position:absolute;top:0;left:0;max-width:100%;max-height:100%;border:3px solid #FF0000;box-sizing:border-box}
+  #nav-back-image {display:block; width:100%}
+
+  </style>
+</head>
+<body>
+
+<div id="container">
+  <div id="xnavigator">
+    <img id="nav-back-image">
+    <div id="nav-viewport"></div>
+  </div>
+</div>
+
+  <script>
+  var container   = document.getElementById('container');
+  var navImage    = document.getElementById('nav-back-image');
+  var navViewport = document.getElementById('nav-viewport');
+  var xnavigator  = document.getElementById('xnavigator');
+  var src = "../sample/sample_tokyo.jpg";
+  var addCenterImage = function(src) {
+    var image = new Image();
+    image.onload = function() {
+      container.style.height     = image.height + "px";
+      container.style.width      = image.width + "px";
+      container.style.backgroundImage = "url(" + src + ")";
+      navImage.src = src;
+      var viewFunc = function() {
+        var rect = container.getBoundingClientRect();
+        var ratio = navImage.offsetHeight / image.height;
+        var top = rect.top;
+        var left = rect.left;
+        navViewport.style.top =  - top*ratio + "px";
+        navViewport.style.left =  - left*ratio + "px";
+        navViewport.style.height =  window.innerHeight*ratio + "px";
+        navViewport.style.width  =  window.innerWidth*ratio + "px";
+      }
+      window.onscroll = viewFunc;
+      window.onresize = viewFunc;
+      viewFunc();
+    }
+    image.src = src;
+  }
+  addCenterImage(src);
+
+  </script>
+
+
+</html>

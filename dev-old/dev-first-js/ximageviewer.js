@@ -20,7 +20,7 @@ $("#image-refresh-bt").click(function(){
 
 var imageBackCover = $('#image-backcover');
 var imageItem = imageCollection[Math.floor(Math.random() * imageCollection.length)];
-imageSRC = imageItem.src;
+imageSRC = "../../" + imageItem.src;
 if (imageItem.copy) {
   $("#img-tt").html(imageItem.title);
 }

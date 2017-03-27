@@ -1,0 +1,100 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge;" />
+  <meta name="viewport" content="width=device-width, user-scalable=no">
+  <title> ximageviewer </title>
+  <meta http-equiv="X-UA-Compatible" content="IE=11; IE=10; IE=9;"/>
+  <style>
+
+  /* RESET DEFAULT CSS */
+  html, body, img, p, ul, ol, li, frame {margin:0;padding:0}
+  img {border:0}
+  a   {color:#EBEBEB}
+  #xiv-hd a {text-decoration:none}
+
+  /* HTML, BODY */
+  html, body, #xiv, #xiv-guider, #xiv-content, #image-screen {height:100%}
+  html {position:relative;overflow:hidden;-webkit-overflow-scrolling: touch;}
+  body {position:relative}
+  html.handheld {overflow:auto;}
+  body {}
+  body {font: 'Noto Sans KR', sans-serif}
+  body {background: #000;color:#EBEBEB;text-shadow:0 0 10px #000, 1px 1px #1C1C1C, 0 0 1px #000}
+  #xiv-screen-image {position:absolute; top:50%;left:50%}
+
+  /*
+     USING BACKGROUND IS BEST AT ALL!
+     translate, minus margin : scroll bar problem;
+  */
+
+  #container {position:relative;min-height:100%;min-width:100%;top:0;left:0;background-position:center; background-repeat: no-repeat;cursor:default}
+
+  </style>
+</head>
+<body>
+<div id="container">
+</div>
+
+  <script>
+  var isHandHeld = function() {
+    var handHeld  = false;
+    var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+    if (/windows phone|android/i.test(userAgent)) {handHeld = true}
+    else if (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream) {handHeld = true}
+    return handHeld;
+  }
+  if (isHandHeld()) {
+    document.getElementById('root').className = "handheld";
+  }
+  var container = document.getElementById('container');
+  var src = "../sample/sample_tokyo.jpg";
+  var addCenterImage = function(src) {
+    var image = new Image();
+    image.onload = function() {
+      container.style.height     = image.height + "px";
+      container.style.width      = image.width + "px";
+      container.style.backgroundImage = "url(" + src + ")";
+      var moving  = false;
+      var current = {
+         _x : undefined,
+         _y : undefined,
+         x  : undefined,
+         y  : undefined
+      }
+      document.body.onmousedown = function(e) {
+        moving = true;
+        current.x  = e.clientX;
+        current.y  = e.clientY;
+        current._x = document.body.scrollLeft;
+        current._y = document.body.scrollTop;
+      }
+      document.body.onmouseup = function() {
+        moving = false;
+        current.x = undefined;
+        current.y = undefined;
+        current._x = undefined;
+        current._y = undefined;
+      }
+      document.body.onmouseleave = function() {
+        moving = false;
+        current.x = undefined;
+        current.y = undefined;
+        current._x = undefined;
+        current._y = undefined;
+      }
+      document.body.onmousemove = function(e) {
+        if (!moving) return;
+        document.body.scrollTop  = current._y + current.y - e.clientY;
+        document.body.scrollLeft = current._x + current.x - e.clientX;
+      }
+    }
+    image.src = src;
+  }
+  addCenterImage(src);
+
+  </script>
+
+
+</html>

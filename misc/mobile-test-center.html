@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge;" />
+  <meta name="viewport" content="width=device-width, user-scalable=no">
+  <title> ximageviewer </title>
+  <meta http-equiv="X-UA-Compatible" content="IE=11; IE=10; IE=9;"/>
+  <script
+  src="https://code.jquery.com/jquery-3.2.1.min.js"
+  integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+  crossorigin="anonymous"></script>
+  <script src="https://use.fontawesome.com/d1e0079ea8.js"></script>
+  <style>
+   html, body, #wrap {margin:0;padding:0;width:100%;height:100%}
+   #wrap {max-height:100vh;max-width:100vw;width:100vh;height:100vh;}
+   #wrap {overflow:auto}
+   img {display:none}
+   img.active {display:block}
+  </style>
+</head>
+<body>
+
+<div id="wrap">
+
+<img src="">
+
+</div>
+
+<script>
+$("img").click(function(){
+  var active = $("img.active");
+  var index = $("img").index(active);
+  $(this).removeClass('active');
+  if (index + 1 >= $('img').length) {
+    $("img").eq(0).addClass('active');
+  } else {
+    $("img").eq(index+1).addClass('active');
+  }
+
+});
+
+</script>
+</body>
+</html>

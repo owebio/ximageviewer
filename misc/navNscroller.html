@@ -1,0 +1,166 @@
+<!doctype html>
+<html id='root'>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge;" />
+  <meta name="viewport" content="width=device-width, user-scalable=no">
+  <title> Nav and Virtual Scroll </title>
+  <meta http-equiv="X-UA-Compatible" content="IE=11; IE=10; IE=9;"/>
+  <style>
+
+  /* RESET DEFAULT CSS */
+  html, body, img, p, ul, ol, li, frame {margin:0;padding:0}
+  img {border:0}
+  a   {color:#EBEBEB}
+  #xiv-hd a {text-decoration:none}
+
+  /* HTML, BODY */
+  html, body, #xiv, #xiv-guider, #xiv-content, #image-screen {height:100%}
+  html {overflow:hidden;}
+  body {position:relative;}
+  html.handheld {overflow:auto;-webkit-overflow-scrolling: touch;}
+  body {font: 'Noto Sans KR', sans-serif}
+  body {background: #000;color:#EBEBEB;text-shadow:0 0 10px #000, 1px 1px #1C1C1C, 0 0 1px #000}
+  #xiv-screen-image {position:absolute; top:50%;left:50%}
+  #footer {position:fixed;z-index:1000;bottom:0;left:0;width:100%;box-sizing:border-box;padding:15px}
+
+  /*
+     USING BACKGROUND IS BEST AT ALL!
+     translate, minus margin : scroll bar problem;
+  */
+
+  #container {-ms-scroll-limit: 0 0 0 0; min-height:100%;min-width:100%;background-position:center; background-repeat: no-repeat;}
+  #xnavigator {position:fixed;top:15px;left:15px;border:2px solid #1C1C1C;width:20vw;}
+  #nav-viewport {position:absolute;top:0;left:0;max-width:100%;max-height:100%;border:3px solid #FF0000;box-sizing:border-box}
+  #nav-back-image {display:block; width:100%}
+
+  </style>
+</head>
+<body>
+
+<div id="container">
+  <div id="xnavigator">
+    <img id="nav-back-image">
+    <div id="nav-viewport"></div>
+  </div>
+</div>
+
+<div id="footer">
+ All are virtual! <br>
+ Wheel and Mouse without legacy except handheld devices.
+</div>
+
+  <script>
+  var isHandHeld = function() {
+    var handHeld  = false;
+    var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+    if (/windows phone|android/i.test(userAgent)) {handHeld = true}
+    else if (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream) {handHeld = true}
+    return handHeld;
+  }
+  if (isHandHeld()) {
+    document.getElementById('root').className = "handheld";
+  }
+  var container   = document.getElementById('container');
+  var navImage    = document.getElementById('nav-back-image');
+  var navViewport = document.getElementById('nav-viewport');
+  var xnavigator  = document.getElementById('xnavigator');
+  var src = "../sample/sample_tokyo.jpg";
+  var addCenterImage = function(src) {
+    var image = new Image();
+    image.onload = function() {
+      container.style.height     = image.height + "px";
+      container.style.width      = image.width + "px";
+      container.style.backgroundImage = "url(" + src + ")";
+      navImage.src = src;
+      var viewFunc = function() {
+        var rect = container.getBoundingClientRect();
+        var ratio = navImage.offsetHeight / image.height;
+        var top = rect.top;
+        var left = rect.left;
+        navViewport.style.top =  - top*ratio + "px";
+        navViewport.style.left =  - left*ratio + "px";
+        navViewport.style.height =  window.innerHeight*ratio + "px";
+        navViewport.style.width  =  window.innerWidth*ratio + "px";
+      }
+      window.onscroll = viewFunc;
+      window.onresize = viewFunc;
+      viewFunc();
+      var moving  = false;
+      var current = {
+         _x : undefined,
+         _y : undefined,
+         x  : undefined,
+         y  : undefined
+      }
+      var scrollUpdate = function(e) {
+        moving = true;
+        current.x  = e.clientX;
+        current.y  = e.clientY;
+        current._x = document.body.scrollLeft || document.documentElement.scrollLeft;
+        current._y = document.body.scrollTop || document.documentElement.scrollTop;
+      }
+      var scrollSet = function(x, y) {
+        document.body.scrollLeft = x;
+        document.body.scrollTop  = y;
+        document.documentElement.scrollLeft = x;
+        document.documentElement.scrollTop  = y;
+      }
+      document.body.onmousedown = function(e) {
+        scrollUpdate(e);
+      }
+      document.body.onmouseup = function() {
+        moving = false;
+        current.x = undefined;
+        current.y = undefined;
+        current._x = undefined;
+        current._y = undefined;
+      }
+      document.body.onmouseleave = function() {
+        moving = false;
+        current.x = undefined;
+        current.y = undefined;
+        current._x = undefined;
+        current._y = undefined;
+      }
+      document.body.onmousemove = function(e) {
+        if (!moving) return;
+        scrollSet(current._x + current.x - e.clientX, current._y + current.y - e.clientY);
+      }
+      container.addEventListener('wheel', function(e) {
+        var delta = Math.max(-1, Math.min(1, e.wheelDelta || -e.deltaY));
+        if (delta < 0 ) ease(true);
+        else ease();
+      });
+    }
+    image.src = src;
+  }
+  addCenterImage(src);
+
+var time = 0, diff = 70, minTime = 0, maxTime = 400;
+function easeInQuad(t, b, c, d) {return c * (t /= d) * t + b;}
+var ease = function(minus) {
+  var value = (minus) ? 1 : -1;
+  var prev;
+  for (var i = 0, len = diff; i <= len; i++) {
+    (function(s) {
+      setTimeout(function() {
+        document.body.scrollTop = document.body.scrollTop + value;
+        document.documentElement.scrollTop = document.documentElement.scrollTop + value;
+        if (prev!==undefined && prev == document.body.scrollTop + document.documentElement.scrollTop) {
+          i = len;
+          return;
+        }
+        prev  = document.body.scrollTop + document.documentElement.scrollTop + value;
+      }, time);
+    })(i);
+    time = easeInQuad(i, minTime, maxTime, diff);
+  }
+}
+
+
+
+  </script>
+
+
+</html>

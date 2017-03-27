@@ -1,0 +1,103 @@
+@import url(//fonts.googleapis.com/earlyaccess/notosanskr.css); /* 'Noto Sans KR' */
+@import url(//fonts.googleapis.com/css?family=Roboto:100,400); /* 'Roboto' */
+
+/* RESET DEFAULT CSS */
+html, body, img, p, ul, ol, li, frame {margin:0;padding:0}
+img {border:0}
+a   {color:#EBEBEB}
+#xiv-hd a {text-decoration:none}
+
+/* HTML, BODY */
+html, body, #xiv, #xiv-guider, #xiv-content, #image-screen {height:100%}
+html {overflow:hidden}
+body {position:relative;}
+body {overflow:auto; -webkit-overflow-scrolling: touch;}
+body {font: 'Noto Sans KR', sans-serif}
+body {background: #000;color:#EBEBEB;text-shadow:0 0 10px #000, 1px 1px #1C1C1C, 0 0 1px #000}
+
+/* POSITIONING CLASSES */
+#xiv-screen-image {position:absolute;display:block;box-shadow:0 0 15px #000}
+.xiv-screen-image {box-sizing:border-box;top:0;left:0;max-width:100%;max-height:100%}
+/*.xiv-screen-image {width:100%;height:100%;object-fit:scale-down}*/
+.toLeft   {left:0;right:auto}
+.toRight  {left:auto;right:0}
+.toCenter {left:auto;right:50%;transform:translateX(50%)}
+.toTop    {top:0;bottom:auto}
+.toBottom {top:auto;bottom:0}
+.toMiddle {top:auto;bottom:50%;transform:translateY(50%)}
+.toCenter.toMiddle {transform:translate(50%, 50%)}
+
+
+#emule-fixed-guider {
+  position: absolute;
+  top:0;bottom:0;left:0;
+  width: 50px;
+  background: #f0f;
+  z-index: 1000;
+}
+#navigator {
+  height: 100%;
+  width: 50%;
+  background: #0f0;
+}
+
+/* GUIDER */
+#xiv {position:relative;display:flex;
+    align-items: stretch;}
+#xiv-sideLeft {position:relative;flex:1;background:#0f0}
+#xiv-content  {position:relative;width:100%}
+
+/* MAIN-AREAS */
+#xid-main-wp   {position:relative;height:100%;box-sizing:border-box;padding:0;}
+#xid-main   {position:relative;height:100%;overflow:hidden;} /* IE9~11 overflow:hidden; */
+#xiv-hd     {position:fixed;width:100%;box-sizing:border-box}
+#xiv-ft     {position:fixed;width:100%;box-sizing:border-box}
+#xiv-screen {
+  position:relative;box-sizing:border-box;width:100%;height:100%;
+  box-shadow:inset 0 0 50px #000000}
+
+#xiv-hd     {top:0;left:0}
+#xiv-screen {top:0;left:0}
+#xiv-ft     {bottom:0;left:0}
+
+#xiv-hd     {z-index:100;}
+#xiv-ft     {z-index:100;}
+.secure-scroll {pointer-events: none;}
+
+#xiv-hd     {
+  background:linear-gradient(to bottom, RGBA(0, 0, 0, 0.5) 0, RGBA(0, 0, 0, 0.5) 30px, RGBA(0, 0, 0, 0));
+  padding-bottom: 60px;
+}
+#xiv-ft     {
+  padding-top: 60px;
+  background:linear-gradient(to top, RGBA(0, 0, 0, 0.5), RGBA(0, 0, 0, 0));
+}
+
+/*HD*/
+#xiv-hd       {overflow:auto;font-size:18px;line-height:28px;padding:10px 0}
+#xiv-opt      {overflow:auto;padding:0 10px}
+.xiv-opt-bts > div {float:left;text-align:center}
+.xiv-opt-bts > div i {display:block;width:28px;line-height:28px}
+#xiv-bt-back  {float:right;background:RGBA(125, 125, 125,0.3);line-height:28px}
+#xiv-title-wp {clear:both;float:left;padding:3px 10px}
+#xiv-title-wp i {display:inline-block;width:28px;text-align:center}
+
+/*FT*/
+#xiv-ft          {padding:3px 10px 5px;}
+#xiv-description {float:left;position:relative; font-size: 14px;}
+#xiv-copy-wp     {clear:both;float:left}
+#xiv-description::before {position:absolute;content:'';top:-0.14em;left:0;width:100%;height:3px;background:#F3F3F3;box-shadow:0 0 5px RGBA(0,0,0, 0.65);}
+/*MISC*/
+#xiv-backcover {position:fixed;top:0;left:0;width:100%;height:100%;overflow:hidden}
+#xiv-backcover-image {position:absolute;top:50%;left:50%;}
+#xiv-backcover-image {transform:translate(-50%, -50%)}
+#xiv-backcover-image {min-width:100%;min-height:100%;}
+#xiv-backcover-image {opacity:0.3;filter:blur(2px) grayscale(100%)}
+
+@media only screen and (min-width: 569px) {
+  #xiv-title-wp {clear:none}
+  #xiv-opt      {float:right}
+  #xiv-copy-wp  {clear:none;float:right}
+}
+
+
