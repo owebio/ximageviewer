@@ -3,41 +3,83 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge;" />
-  <meta name="viewport" content="width=device-width, user-scalable=no">
-  <link rel="profile" href="http://gmpg.org/xfn/11">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
   <title> ximageviewer </title>
-  <meta http-equiv="X-UA-Compatible" content="IE=11; IE=10; IE=9; IE=8"/>
-  <link href="style.css" rel="stylesheet">
+  <meta http-equiv="X-UA-Compatible" content="IE=11; IE=10; IE=9;"/>
+  <link href="style.dev.css" rel="stylesheet">
   <script
   src="https://code.jquery.com/jquery-3.2.1.min.js"
   integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
   crossorigin="anonymous"></script>
   <script src="https://use.fontawesome.com/d1e0079ea8.js"></script>
-  <script src="ximageviewer.js"></script>
+  <script src="ximageviewer.dev.js"></script>
 </head>
-<body class="type-image"><div id="doc-photo">
-<div id="navigator">
-  <div id="nav-image"></div>
-  <div id="nav-viewport"></div>
+<body>
+
+<div id="xiv">
+<!-- navigator
+<div id="xiv-navigator">
+  <div id="xiv-nav-image"></div>
+  <div id="xiv-nav-viewport"></div>
 </div>
-<div id="full-close-bt">X</div>
-<div id="image-hd">
-  <div id="image-opt">
-    <div class="image-opt-bt" id="image-home-bt"><a href="https://github.com/owebio/ximageviewer"><i class="fa fa-github" aria-hidden="true"></i></a></div>
-    <div class="image-opt-bt" id="image-list-bt"><i class="fa fa-tasks" aria-hidden="true"></i></div>
-    <div class="image-opt-bt" id="image-size-bt"><i class="fa fa-arrows-alt" aria-hidden="true"></i></div>
-    <div class="image-opt-bt" id="image-back-bt"><i class="fa fa-angle-left" aria-hidden="true"></i></div>
-  </div>
-  <div id="image-title"><i class="fa fa-camera" aria-hidden="true"></i> <span id="img-tt">ximageviewer</span> </div>
-</div>
-<div id="image-screen"></div>
-<div id="image-ft">
-  <div id="image-desc">Try to test by resizing and scrolling window. <br> Random images for checking viewer. <br> <a href="">Click here to reload random image.</a></div>
-  <div id="image-copyright"><i class="fa fa-copyright" aria-hidden="true"></i><span id="image-copy-value">oneiroi</span></div>
-</div>
-<div id="image-backcover">
+<div id="xiv-full-close-bt">X</div>
+<!-- misc -->
+<div id="xiv-backcover">
+  <img id="xiv-backcover-image">
 </div>
 
-<script src="index.js"></script>
-</div></body>
+<!-- xiv-hd -->
+<div id="xiv-hd">
+  <div id="xiv-opt" class="xiv-opt-bts">
+    <div id="xiv-bt-home"><a href="//github.com/owebio/ximageviewer"><i class="fa fa-github"></i></a></div>
+    <div id="xiv-bt-list"><i class="fa fa-tasks"></i></div>
+    <div id="xiv-bt-original"><i class="fa fa-arrows-alt"></i></div>
+    <div id="xiv-bt-back"><i class="fa fa-angle-left"></i></div>
+  </div>
+  <div id="xiv-title-wp"><i class="fa fa-camera"></i> <span id="xiv-title">ximageviewer</span> </div>
+</div>
+<!-- xiv-screen -->
+<div id="xiv-screen">
+  <img id="xiv-screen-image">
+</div>
+<!-- xiv-ft -->
+<div id="xiv-ft">
+  <div id="xiv-description">
+    Try to test by resizing and scrolling window. <br>
+    Random images for checking viewer. <br>
+    <a href="">Click here to reload random image.</a>
+  </div>
+  <div id="xiv-copy-wp">
+    <i class="fa fa-copyright"></i><span id="xiv-copyright">oneiroi</span>
+  </div>
+</div>
+
+
+
+<div id="xnavigator">
+  <img id="nav-back-image">
+  <div id="nav-viewport"></div>
+</div>
+
+<div id="nav-back">
+</div>
+
+
+</div>
+
+<!--
+
+<div id="" style="height:300px;">
+asdsd
+</div>
+
+<div id="emule-fixed-guider">
+  <div id="navigator">
+  </div>
+</div>
+-->
+
+
+<script src="index.dev.js"></script>
+</body>
 </html>
