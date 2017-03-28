@@ -12,7 +12,7 @@ html, body, #xiv, #xiv-guider, #xiv-content, #image-screen {height:100%;width:10
 html {max-width:100vw; max-height:100vh;background: #000;position:relative;}
 body {position:relative;} /*IE9~11, Edge Buggy for translate */
 body {-webkit-overflow-scrolling: touch; touch-action:none;}
-body {font: 'Noto Sans KR', sans-serif}
+body {font-family: 'Noto Sans KR', sans-serif}
 body {color:#EBEBEB;text-shadow:0 0 10px #000, 1px 1px #1C1C1C, 0 0 1px #000}
 
 /* POSITIONING CLASSES */
