@@ -53,16 +53,12 @@ var XIV = {
     backElem.get(0).src  = source.url;
     navElem.get(0).src   = source.url;
     elem.get(0).src      = source.url;
-    $("#xiv-bt-original").click(function(){
-      XIV.toOriginal();
-    });
+    $("#xiv-bt-original").click(XIV.toOriginal);
     $("#xnavigator").click(function(){
       $(this).toggleClass("bottom");
     });
-    //Hammer($("#xiv").get(0)).on("doubletap", XIV.toggleMode); //buggy freezing
-    //$("body").dblclick(XIV.toggleMode);
     var clicked = false;
-    $("#xiv").click(function(){
+    $("body").click(function(){
       if (clicked) XIV.toggleMode();
       clicked = true;
       setTimeout(function(){clicked = false}, 300);
@@ -108,7 +104,7 @@ XIV.infoUpdate  = function(item) {
 
 /* MODE  */
 XIV.toReset = function() {
-  $("html").removeClass("toCover toOriginal toFull");
+  $("html").removeClass("toMain toCover toOriginal toFull");
   return this;
 }
 XIV.toOriginal = function() {
@@ -128,11 +124,8 @@ XIV.toMain = function() {
 }
 
 XIV.toggleMode = function() {
-  if (XIV.mode == "MAIN") {
-    XIV.toOriginal();
-  } else {
-    XIV.toMain();
-  }
+  if (XIV.mode == "ORIGINAL") XIV.toMain();
+  else XIV.toOriginal();
   return this;
 }
 
