@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge;" />
+  <meta name="viewport" content="width=device-width, user-scalable=no">
+  <title> ximageviewer </title>
+  <meta http-equiv="X-UA-Compatible" content="IE=11; IE=10; IE=9;"/>
+  <script
+  src="https://code.jquery.com/jquery-3.2.1.min.js"
+  integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+  crossorigin="anonymous"></script>
+  <script src="https://use.fontawesome.com/d1e0079ea8.js"></script>
+  <style>
+
+  @import url(//fonts.googleapis.com/earlyaccess/notosanskr.css); /* 'Noto Sans KR' */
+  @import url(//fonts.googleapis.com/css?family=Roboto:100,400); /* 'Roboto' */
+
+   html, body, #wrap {margin:0;padding:0;width:100%;height:100%}
+
+   body {
+     background: #000;
+     background: linear-gradient(to left, #232526, #141414);
+     font-family: 'Noto Sans KR', sans-serif;
+     -webkit-overflow-scrolling: touch;
+     color: #fff;
+   }
+
+   #wrap {position:relative;min-height:100vh;min-width:100vw;max-height:100vh;max-width:100vw;width:100vw;height:100vh;}
+   #wrap {overflow:auto}
+   img {position:absolute;top:0;left:0;}
+   img {top:auto;left:auto;bottom:50%;right:50%;transform:scale(1) translate(50%, 50%)}
+
+   img {display:none}
+   img.active {display:block}
+
+   /*
+  .toLeft   {left:0;right:auto}
+  .toRight  {left:auto;right:0}
+  .toCenter {left:auto;right:50%;transform:translateX(50%)}
+  .toTop    {top:0;bottom:auto}
+  .toBottom {top:auto;bottom:0}
+  .toMiddle {top:auto;bottom:50%;transform:translateY(50%)}
+  .toCenter.toMiddle {transform:translate(50%, 50%)}
+
+
+  */
+
+   #wrap.toCover {overflow:hidden}
+  .toCover img {min-height:100%;min-width:100%;top:auto;left:auto;bottom:50%;right:50%;transform:translate(50%, 50%)}
+  .toFull img {max-height:100%;max-width:100%;top:auto;left:auto;bottom:50%;right:50%;transform:translate(50%, 50%)}
+  .toZoom05 img {transform:translate(50%, 50%) scale(0.5)}
+
+  #hud {position:fixed;z-index:1000;top:0;left:0;line-height:42px;overflow:auto;box-sizing:border-box;padding:5px 10px;color:#EBEBEB;text-shadow:1px 1px #000, 0 0 30px #000;font-size:18px}
+  #hud span {float:left;width:42px;font-weight:800;text-align:center;cursor:pointer;background:RGBA(0,0,0,0.1);}
+  #hud span:hover {background:RGBA(0,0,0,0.25)}
+  #hud span.active {background:RGBA(0,0,0,0.3);color:#fff}
+  #desc {font-family:'Roboto';clear:left;text-shadow:1px 1px #000;line-height:1.5}
+
+  #title {font-family:'Roboto';font-weight:100;font-size:32px;line-height:40px;}
+  #exp {position:absolute;left:0;bottom:0;margin:0 15px 20px;padding:0 15px;font-size:14px;line-height:1.25;font-family:'Roboto'}
+  #exp {border-left:5px solid #fff;float:left;box-sizing:border-box;text-shadow:1px 1px #000;}
+  #exp {-webkit-backface-visibility: hidden;}
+  </style>
+</head>
+<body>
+<div id="hud">
+  <div id="title">Pure CSS & IMG element Exp Version #1</div>
+  <span id="prev" data-desc="Prev"> <i class="fa fa-chevron-left"></i> </span>
+  <span id="toReset" data-desc="Reset"> X </span>
+  <span id="toCover" data-desc="Cover Size"> C </span>
+  <span id="toFull" data-desc="Extend to nearest edge If bigger than viewport"><i class="fa fa-expand"></i></span>
+  <span id="toOrigin" data-desc="Original Size"> O </span>
+  <span id="toZoom05" data-desc="Zoom to 50%"> 50% </span>
+  <span id="next" data-desc="Next"> <i class="fa fa-chevron-right"></i> </span>
+  <div id="desc">&nbsp;</div>
+</div>
+
+<div id="wrap">
+  <img src="/github/ximageviewer/sample/sample_cuba.jpg" class="active">
+  <img src="/github/ximageviewer/sample/sample_barcelona.jpg">
+  <img src="/github/ximageviewer/sample/sample_paris.jpg">
+  <img src="/github/ximageviewer/sample/HongKong.jpg">
+</div>
+
+<div id="exp">
+<b>PRO</b> : Light and Easy. No script. <br/>
+<b>CON</b> : Hard to center image without pre-checking size if one side is bigger than viewport. <br/>
+<u>Using this way for extended, cover size.</u>
+</div>
+
+<script>
+var reset = function(elem){
+  $("#wrap").scrollTop(0);
+  $("#wrap").scrollLeft(0);
+  $("#wrap").removeClass('active toCover toFull toOrignial toZoom05');
+  if (elem) elem.removeClass('active');
+  $("#desc").html("&nbsp;");
+}
+$("#prev").click(function(){
+  var active = $("img.active");
+  var prev = active.prev();
+  reset($("img"));
+  if (prev.length) {
+    prev.addClass('active');
+  } else {
+    $("img").last().addClass('active');
+  }
+});
+$("#next").click(function(){
+  var active = $("img.active");
+  var next = active.next();
+  reset($("img"));
+  if (next.length) {
+    next.addClass('active');
+  } else {
+    $("img").eq(0).addClass('active');
+  }
+});
+$("#toCover").click(function(){
+  var elem = $("img.active");
+  reset();
+  $("#wrap").addClass('toCover');
+});
+$("#toReset").click(function(){
+  reset();
+});
+$("#toFull").click(function(){
+  reset();
+  $("#wrap").addClass('toFull');
+});
+$("#toOrigin").click(function(){
+  reset();
+  $("#wrap").addClass('toOrigin');
+});
+$("#toZoom05").click(function(){
+  reset();
+  $("#wrap").addClass('toZoom05');
+});
+
+$("#hud span").click(function(){
+  $("#hud span").removeClass('active');
+  $(this).addClass('active');
+  var desc = $(this).data('desc');
+  $("#desc").html(desc);
+});
+</script>
+</body>
+</html>

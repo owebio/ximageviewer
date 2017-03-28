@@ -9,11 +9,11 @@ a   {color:#EBEBEB}
 
 /* HTML, BODY */
 html, body, #xiv, #xiv-guider, #xiv-content, #image-screen {height:100%;width:100%;}
-html {max-width:100vw; max-height:100vh}
+html {max-width:100vw; max-height:100vh;background: #000;position:relative;}
 body {position:relative;}
-body {-webkit-overflow-scrolling: touch;}
+body {-webkit-overflow-scrolling: touch; touch-action:none;}
 body {font: 'Noto Sans KR', sans-serif}
-body {background: #000;color:#EBEBEB;text-shadow:0 0 10px #000, 1px 1px #1C1C1C, 0 0 1px #000}
+body {color:#EBEBEB;text-shadow:0 0 10px #000, 1px 1px #1C1C1C, 0 0 1px #000}
 
 /* POSITIONING CLASSES */
 #xiv-screen-image {position:absolute;display:block;box-shadow:0 0 15px #000}
@@ -28,12 +28,16 @@ body {background: #000;color:#EBEBEB;text-shadow:0 0 10px #000, 1px 1px #1C1C1C,
   background: #f0f;
   z-index: 1000;
 }
-/*toOriginal*/
-#nav-back {display:none}
-#nav-back {-ms-scroll-limit: 0 0 0 0; background-position:center; background-repeat: no-repeat;position:absolute;top:0;left:0}
+
+/* MODE : toOriginal */
+#nav-back {display:none;}
+#nav-back {-ms-scroll-limit: 0 0 0 0;pointer-events: none;background-repeat: no-repeat;background-position:center;position:absolute;top:0;left:0;min-width:100vw;min-height:100vh}
+
 #xnavigator {position:fixed;z-index:100;margin:15px;top:0;left:0;border:2px solid #1C1C1C;width:25vw;}
-#xnavigator.bottom {top:auto;bottom:0;}
-#nav-viewport {position:absolute;top:0;left:0;max-width:100%;max-height:100%;border:3px solid #FF0000;box-sizing:border-box}
+#xnavigator.bottom {top:auto; bottom:0;}
+
+#nav-viewport {position:absolute;top:0;left:0;max-width:100%;max-height:100%;border:3px solid #FF0000;box-sizing:border-box;}
+/*#nav-viewport {transition:top 10ms ease-in;} flicking bugg @iphone & webkit */
 #nav-back-image {display:block; width:100%}
 #xnavigator {display:none}
 html.toOriginal {overflow:hidden}
@@ -43,14 +47,15 @@ html.toOriginal body {overflow:auto;}
 .toOriginal #xiv-hd     {display:none}
 .toOriginal #xiv-ft     {display:none}
 .toOriginal #xiv-screen {display:none}
-.toOriginal #xiv-backcover-image {opacity:0.20}
+.toOriginal #xiv-backcover-image {opacity:0.20;}
+
 /* GUIDER */
 #xiv {position:relative;width:100%;height:100%;}
 #xiv-content  {position:relative;width:100%;height:100%;}
 
-/* MAIN-AREAS */
+/* MAIN-AREA */
 #xiv-hd     {position:fixed;width:100%;box-sizing:border-box}
-#xiv-ft     {position:fixed;width:100%;box-sizing:border-box}
+#xiv-ft     {position:fixed;width:100%;box-sizing:border-box;overflow:auto}
 #xiv-screen {
   position:relative;box-sizing:border-box;width:100%;height:100%;
   box-shadow:inset 0 0 50px #000000}
@@ -65,15 +70,13 @@ html.toOriginal body {overflow:auto;}
 
 #xiv-hd     {
   background:linear-gradient(to bottom, RGBA(0, 0, 0, 0.5) 0, RGBA(0, 0, 0, 0.5) 30px, RGBA(0, 0, 0, 0));
-  padding-bottom: 60px;
 }
 #xiv-ft     {
-  padding-top: 60px;
   background:linear-gradient(to top, RGBA(0, 0, 0, 0.5), RGBA(0, 0, 0, 0));
 }
 
-/*HD*/
-#xiv-hd       {overflow:auto;font-size:18px;line-height:28px;padding:10px 0}
+/*HEAD*/
+#xiv-hd       {overflow:auto;font-size:18px;line-height:28px;padding:10px 0 50px}
 #xiv-opt      {overflow:auto;padding:0 10px}
 .xiv-opt-bts > div {float:left;text-align:center}
 .xiv-opt-bts > div i {display:block;width:28px;line-height:28px}
@@ -81,23 +84,29 @@ html.toOriginal body {overflow:auto;}
 #xiv-title-wp {clear:both;float:left;padding:3px 10px}
 #xiv-title-wp i {display:inline-block;width:28px;text-align:center}
 
-/*FT*/
-#xiv-ft          {padding:3px 10px 5px;}
-#xiv-description {float:left;position:relative; font-size: 14px;}
+/*FOOT*/
+#xiv-ft          {padding:30px 10px 10px;}
+#xiv-description {float:left;position:relative;font-size:14px;margin:0 4px 4px 0}
+#xiv-description::before {position:absolute;content:'';top:-0.25em;left:0;width:100%;height:3px;background:#F3F3F3;box-shadow:0 0 5px RGBA(0,0,0, 0.65);}
 #xiv-copy-wp     {clear:both;float:left}
-#xiv-description::before {position:absolute;content:'';top:-0.2em;left:0;width:100%;height:3px;background:#F3F3F3;box-shadow:0 0 5px RGBA(0,0,0, 0.65);}
+#xiv-copy-wp i   {margin-right:4px}
+
 /*MISC*/
-#xiv-backcover       {position:fixed;z-index: top:0;left:0;height:100%;width:100%;overflow:hidden}
+#xiv-backcover       {position:fixed;z-index: -1;top:0;left:0;height:100vh;width:100vw;overflow:hidden}
 #xiv-backcover-image {position:absolute;top:50%;left:50%;}
 #xiv-backcover-image {transform:translate(-50%, -50%)}
 #xiv-backcover-image {min-width:100%;min-height:100%;}
 #xiv-backcover-image {opacity:0.3; filter:blur(2px) grayscale(100%)}
 
+/* DEVICE */
 @media only screen and (min-width: 569px) {
   #xnavigator   {width:20vw}
   #xiv-title-wp {clear:none}
   #xiv-opt      {float:right}
   #xiv-copy-wp  {clear:none;float:right}
 }
+
+/* EFFECTS */
+
 
 

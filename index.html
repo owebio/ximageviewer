@@ -3,10 +3,11 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge;" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+  <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
   <title> ximageviewer </title>
   <meta http-equiv="X-UA-Compatible" content="IE=11; IE=10; IE=9;"/>
   <link href="style.dev.css" rel="stylesheet">
+  <script src="hammer.min.js"></script>
   <script
   src="https://code.jquery.com/jquery-3.2.1.min.js"
   integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
@@ -14,7 +15,7 @@
   <script src="https://use.fontawesome.com/d1e0079ea8.js"></script>
   <script src="ximageviewer.dev.js"></script>
 </head>
-<body>
+<body style="touch-action:none">
 
 <div id="xiv">
 <!-- navigator
@@ -55,12 +56,12 @@
 </div>
 
 
-
-<div id="xnavigator">
-  <img id="nav-back-image">
-  <div id="nav-viewport"></div>
+<div id="xnav">
+  <div id="xnavigator">
+    <img id="nav-back-image">
+    <div id="nav-viewport"></div>
+  </div>
 </div>
-
 <div id="nav-back">
 </div>
 
