@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ko">
+<html id="xiv-root">
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge;" />
@@ -15,7 +15,7 @@
   <script src="https://use.fontawesome.com/d1e0079ea8.js"></script>
   <script src="ximageviewer.dev.js"></script>
 </head>
-<body style="touch-action:none">
+<body>
 
 <div id="xiv">
 <!-- navigator
@@ -26,7 +26,7 @@
 <div id="xiv-full-close-bt">X</div>
 <!-- misc -->
 <div id="xiv-backcover">
-  <img id="xiv-backcover-image">
+  <img id="xiv-backcover-image" draggable="false">
 </div>
 
 <!-- xiv-hd -->
@@ -58,29 +58,15 @@
 
 <div id="xnav">
   <div id="xnavigator">
-    <img id="nav-back-image">
+    <img id="nav-back-image" draggable="false">
     <div id="nav-viewport"></div>
   </div>
 </div>
-<div id="nav-back">
+<!-- 'unselectable' for chrome's slow mousemove event -->
+<div id="nav-back" unselectable="on"></div>
+<div id="original-close-bt">X</div>
+
 </div>
-
-
-</div>
-
-<!--
-
-<div id="" style="height:300px;">
-asdsd
-</div>
-
-<div id="emule-fixed-guider">
-  <div id="navigator">
-  </div>
-</div>
--->
-
-
 <script src="index.dev.js"></script>
 </body>
 </html>

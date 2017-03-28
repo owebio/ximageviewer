@@ -10,7 +10,7 @@ var source = {
   height     : undefined
 }
 
-var sourceDefault = {
+var XIVSourceDefault = {
   copyright   : "oneiroi",
   description : "Try to test by resizing and scrolling window. <br>" +
     "Random images for checking viewer. <br>" +
@@ -19,7 +19,7 @@ var sourceDefault = {
 
 /* CORE */
 var XIV = {
-  status     : "INIT",    // "INIT" | "READY"
+  status     : "INIT",    // "INIT" | "READY" | "COMPLETE"
   mode       : "MAIN",    // "MAIN" | "ORIGINAL"
   isHandheld : undefined,
   elem       : undefined,
@@ -38,7 +38,7 @@ var XIV = {
   init     : function(item) {
     if (item) {
       var item = (typeof item == 'string') ? {url: item} : item;
-      source = jQuery.extend({}, sourceDefault, item);
+      source = jQuery.extend({}, XIVSourceDefault, item);
       this.infoUpdate(source);
     }
     var elem = this.elem = $("#xiv-screen-image");
@@ -53,22 +53,23 @@ var XIV = {
     backElem.get(0).src  = source.url;
     navElem.get(0).src   = source.url;
     elem.get(0).src      = source.url;
-    $("#xiv-bt-original").click(function(){
-      XIV.toOriginal();
-    });
-    $("#xnavigator").click(function(){
+    $("#xiv-bt-original").click(XIV.toOriginal);
+    $("#xnav").click(function(){
       $(this).toggleClass("bottom");
     });
-    //Hammer($("#xiv").get(0)).on("doubletap", XIV.toggleMode); //buggy freezing
-    //$("body").dblclick(XIV.toggleMode);
     var clicked = false;
-    $("#xiv").click(function(){
+    $(window).click(function(){
       if (clicked) XIV.toggleMode();
       clicked = true;
       setTimeout(function(){clicked = false}, 300);
     });
-    $("body").scroll(XIV.navDraw);
+    $("#original-close-bt").click(XIV.toMain);
+    $(window).scroll(XIV.navDraw); /* DESKTOP */
+    $("body").scroll(XIV.navDraw); /* HANDHELD */
     $(window).resize(XIV.navDraw);
+    mouseScroll.init();
+    XIV.status = "READY";
+    $("body").removeClass('status-init').addClass("status-ready");
   },
   error    : function(e) {
     console.log("ERROR!!! : ", e);
@@ -81,6 +82,8 @@ var XIV = {
     navMain.style.height = source.height + "px";
     navMain.style.width  = source.width + "px";
     navMain.style.backgroundImage = "url(" + source.url + ")";
+    XIV.status = 'COMPLETE';
+    $("body").removeClass('status-ready').addClass("status-complete");
   }
 }
 
@@ -108,7 +111,7 @@ XIV.infoUpdate  = function(item) {
 
 /* MODE  */
 XIV.toReset = function() {
-  $("html").removeClass("toCover toOriginal toFull");
+  $("html").removeClass("toMain toCover toOriginal toFull");
   return this;
 }
 XIV.toOriginal = function() {
@@ -128,19 +131,20 @@ XIV.toMain = function() {
 }
 
 XIV.toggleMode = function() {
-  if (XIV.mode == "MAIN") {
-    XIV.toOriginal();
-  } else {
-    XIV.toMain();
-  }
+  if (XIV.mode == "ORIGINAL") XIV.toMain();
+  else XIV.toOriginal();
   return this;
 }
 
 /* ORIGINAL MODE */
 XIV.navDraw   = function() {
   if (XIV.mode != "ORIGINAL") return this;
+  // element.getBoundingClientRect().height
   var rect    = XIV.navMain.get(0).getBoundingClientRect();
-  var ratio   = XIV.navElem.get(0).offsetHeight / source.height;
+  var ratio   = Math.max( //it works after transform's scaling.
+    XIV.navElem.get(0).offsetHeight / rect.height,
+    XIV.navElem.get(0).offsetWidth  / rect.width
+  );
   var top     = rect.top;
   var left    = rect.left;
   var navPort = XIV.navPort.get(0);
@@ -148,6 +152,56 @@ XIV.navDraw   = function() {
   navPort.style.left   = -left * ratio + 'px';
   navPort.style.height = window.innerHeight * ratio + 'px';
   navPort.style.width  = window.innerWidth * ratio + 'px';
+}
+
+/* DESKTOP MOUSE SCROLL */
+
+var _DESKSCROLL = {
+  using : false, _x : undefined, _y : undefined, x : undefined, y : undefined
+}
+var mouseScroll = {
+  update : function(e) {
+    if (XIV.mode != 'ORIGINAL') return;
+    var current = _DESKSCROLL;
+    current.using = true;
+    current.x  = e.clientX;
+    current.y  = e.clientY;
+    current._x = document.body.scrollLeft || document.documentElement.scrollLeft;
+    current._y = document.body.scrollTop || document.documentElement.scrollTop;
+    return this;
+  },
+  reset   : function() {
+    if (XIV.mode != 'ORIGINAL') return;
+    var current = _DESKSCROLL;
+    current.using = false;
+    current.x = undefined;
+    current.y = undefined;
+    current._x = undefined;
+    current._y = undefined;
+    return this;
+  },
+  move : function(x, y, time) {
+    // MS Edge, Other
+    //$('body').animate({scrollLeft:x, scrollTop:y},{queue:false,duration:50,easing:'linear'})
+    document.body.scrollLeft = x;
+    document.body.scrollTop  = y;
+    // IE9~11 
+    document.documentElement.scrollLeft = x;
+    document.documentElement.scrollTop  = y;
+    XIV.navDraw();
+  },
+  init : function() {
+    var navBack = $("#nav-back");
+    navBack.mousedown(this.update);
+    navBack.mouseup(this.reset);
+    navBack.mouseleave(this.reset);
+    navBack.mousemove(function(e) {
+      if (!_DESKSCROLL.using) return;
+      if (XIV.mode != 'ORIGINAL') return;
+      var current = _DESKSCROLL;
+      mouseScroll.move(current._x + current.x - e.clientX, current._y + current.y - e.clientY);
+    });
+  }
 }
 
 /* SIZE */
@@ -208,7 +262,9 @@ var isHandheld = function() {
 }
 if (isHandheld()) {
   XIV.isHandheld = true;
-  document.getElementById('xiv-root').className = "handheld";
+  $('#xiv-root').addClass("handheld");
 } else {
   XIV.isHandheld = false;
 }
+
+$("body").addClass("status-init");
