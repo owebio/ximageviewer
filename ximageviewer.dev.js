@@ -19,12 +19,12 @@ var XIVSourceDefault = {
 
 /* CORE */
 var XIV = {
-  status     : "INIT",    // "INIT" | "READY" | "COMPLETE"
-  mode       : "MAIN",    // "MAIN" | "ORIGINAL"
-  isHandheld : undefined,
-  elem       : undefined,
-  backElem   : undefined,
-  navElem    : undefined,
+  status       : "INIT",    // "INIT" | "READY" | "COMPLETE"
+  mode         : "MAIN",    // "MAIN" | "ORIGINAL"
+  isHandheld   : undefined,
+  elem         : undefined,
+  backElem     : undefined,
+  navElem      : undefined,
   load       : function(item) {
   },
   empty      : function() {
@@ -54,7 +54,7 @@ var XIV = {
     navElem.get(0).src   = source.url;
     elem.get(0).src      = source.url;
     $("#xiv-bt-original").click(XIV.toOriginal);
-    $("#xnav").click(function(){
+    $("#xnav").mousedown(function(){
       $(this).toggleClass("bottom");
     });
     var clicked = false;
@@ -64,6 +64,7 @@ var XIV = {
       setTimeout(function(){clicked = false}, 300);
     });
     $("#original-close-bt").click(XIV.toMain);
+    $("#xiv-bt-screen").click(XIV.toToggleFullScreen);
     $(window).scroll(XIV.navDraw); /* DESKTOP */
     $("body").scroll(XIV.navDraw); /* HANDHELD */
     $(window).resize(XIV.navDraw);
@@ -113,7 +114,7 @@ XIV.infoUpdate  = function(item) {
 XIV.toReset = function() {
   $("html").removeClass("toMain toCover toOriginal toFull");
   return this;
-}
+};
 XIV.toOriginal = function() {
   if (XIV.mode == "ORIGINAL") return this;
   XIV.toReset();
@@ -121,14 +122,35 @@ XIV.toOriginal = function() {
   XIV.mode = "ORIGINAL";
   XIV.navDraw();
   return this;
-}
+};
 XIV.toMain = function() {
   if (XIV.mode == "MAIN") return this;
   XIV.toReset();
   $("html").addClass("toMain");
   XIV.mode = "MAIN";
   return this;
-}
+};
+XIV.isFullScreen = function() {
+  return (window.innerWidth == screen.width && window.innerHeight == screen.height);
+};
+XIV.toToggleFullScreen = function() {
+  var elem = document.documentElement;
+  var isFullScreen = XIV.isFullScreen();
+  if (isFullScreen) {
+    var toExitFullScreen = document.exitFullscreen || document.webkitExitFullscreen
+      || document.mozExitFullscreen || document.msExitFullscreen;
+    if (toExitFullScreen) {
+      toExitFullScreen.call(document); 
+    }
+    return this;
+  } else {
+    var toFullScreen = elem.requestFullScreen || elem.webkitRequestFullScreen
+      || elem.mozRequestFullScreen   || elem.msRequestFullscreen;
+    if (toFullScreen) {
+      toFullScreen.call(elem);
+    }
+  }
+};
 
 XIV.toggleMode = function() {
   if (XIV.mode == "ORIGINAL") XIV.toMain();
