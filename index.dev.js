@@ -14,3 +14,4 @@ var imageCollection = [
 var imageItem = imageCollection[Math.floor(Math.random() * imageCollection.length)];
 XIV.init(imageItem);
 
+

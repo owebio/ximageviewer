@@ -1,4 +1,5 @@
 
+
 var collection = []
 
 var source = {
@@ -39,7 +40,7 @@ var XIV = {
     if (item) {
       var item = (typeof item == 'string') ? {url: item} : item;
       source = jQuery.extend({}, XIVSourceDefault, item);
-      this.infoUpdate(source);
+      XIV.infoUpdate(source);
     }
     var elem = this.elem = $("#xiv-screen-image");
     var backElem = this.backElem = $("#xiv-backcover-image");
@@ -58,16 +59,21 @@ var XIV = {
       $(this).toggleClass("bottom");
     });
     var clicked = false;
-    $(window).click(function(){
+    $("#xiv-screen-image").click(function(){
+      clicked = false;
+      XIV.toggleMode();
+    })
+    navMain.click(function(){
       if (clicked) XIV.toggleMode();
       clicked = true;
       setTimeout(function(){clicked = false}, 300);
-    });
+    });;
     $("#original-close-bt").click(XIV.toMain);
     $("#xiv-bt-screen").click(XIV.toToggleFullScreen);
     $(window).scroll(XIV.navDraw); /* DESKTOP */
     $("body").scroll(XIV.navDraw); /* HANDHELD */
     $(window).resize(XIV.navDraw);
+    $(window).resize(XIV.adjustCover);
     mouseScroll.init();
     XIV.status = "READY";
     $("body").removeClass('status-init').addClass("status-ready");
@@ -83,6 +89,7 @@ var XIV = {
     navMain.style.height = source.height + "px";
     navMain.style.width  = source.width + "px";
     navMain.style.backgroundImage = "url(" + source.url + ")";
+    XIV.adjustCover();
     XIV.status = 'COMPLETE';
     $("body").removeClass('status-ready').addClass("status-complete");
   }
@@ -156,6 +163,15 @@ XIV.toggleMode = function() {
   if (XIV.mode == "ORIGINAL") XIV.toMain();
   else XIV.toOriginal();
   return this;
+}
+
+/* ADJUST AGAIN AND WELL */
+XIV.adjustCover = function() {
+  var winRatio = window.innerHeight / window.innerWidth;
+  var sourceRatio = source.height / source.width;
+  if (sourceRatio > winRatio) { /* HAVING WIDTH MARGIN */
+  } else {  /* HAVING HEIGHT MARGIN */
+  }
 }
 
 /* ORIGINAL MODE */
@@ -290,3 +306,4 @@ if (isHandheld()) {
 }
 
 $("body").addClass("status-init");
+

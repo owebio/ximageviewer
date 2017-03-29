@@ -18,7 +18,9 @@ body {color:#EBEBEB;text-shadow:0 0 10px #000, 1px 1px #1C1C1C, 0 0 1px #000}
 /* POSITIONING CLASSES */
 #xiv-screen-image {position:fixed;display:block;box-shadow:0 0 35px #000;user-select: none;-ms-user-select: none;}
 #xiv-screen-image {box-sizing:border-box;top:50%;left:50%;max-width:100%;max-height:100%}
-#xiv-screen-image {transform:translate(-50%, -50%)}
+#xiv-screen-image {transform:translate(-50%, -50%);filter:blur(5px)}
+#xiv-screen-image {opacity:0;}
+.status-complete #xiv-screen-image {opacity:1;filter:blur(0)}
 
 /* MODE : toOriginal */
 #xnav     {position:fixed;z-index:100;top:0;left:0;opacity:0;padding:15px;}
@@ -28,16 +30,19 @@ body {color:#EBEBEB;text-shadow:0 0 10px #000, 1px 1px #1C1C1C, 0 0 1px #000}
 #nav-back {background-repeat: no-repeat;background-position:-100% -10%;-ms-scroll-limit: 0 0 0 0;}
 #nav-back {top:-10000px;left:-10000px;opacity:0;}
 .handheld #nav-back {min-width:100vw}
-
 #xnavigator {position:relative;border:2px solid RGBA(0,0,0,0.65);width:25vw;}
 #xnav.bottom {top:100%; transform:translate(0, -100%)}
+
+
+#xnavigator {visibility:hidden}
+#xnavigator {transform:translate(-100%, 0)}
+.toOriginal #xnavigator {visibility:visible;transform:translate(0, 0)}
 
 #nav-viewport {position:absolute;top:0;left:0;max-width:100%;max-height:100%;border:3px solid #f00;box-sizing:border-box;opacity:0;}
 /*#nav-viewport {transition:all 50ms ease-in;} flicking bugg @iphone & webkit */
 /*.handheld #nav-viewport {transition: none;}*/
 #nav-back-image {display:block; width:100%;}
 #nav-back-image {user-select: none;-ms-user-select: none;-moz-user-select: none;}
-#xnavigator {display:none}
 
 /* MOBILE */
 html.handheld.toOriginal {overflow:hidden}
@@ -48,37 +53,34 @@ html.toOriginal {overflow:visible}
 
 .toOriginal #xnavigator {display:block;z-index:200;opacity:1;}
 .toOriginal #nav-back   {display:block;visibility:visible;z-index:100;opacity:1;top:0;left:0;background-position:center}
-.toOriginal #xiv-hd     {display:none}
-.toOriginal #xiv-ft     {display:none}
+.toOriginal #xiv-hd     {}
+.toOriginal #xiv-ft     {}
 .toOriginal #xiv-screen {display:none}
 .toOriginal #xiv-backcover-image {opacity:0.20;}
 .toOriginal #xnav {visibility:visible;z-index:200;opacity:1;}
 .toOriginal #nav-viewport {opacity:0.75}
+.toOriginal #xiv-hd {transform:translate(0, -100%)}
+.toOriginal #xiv-ft {transform:translate(0, 100%)}
+
 /* GUIDER */
 #xiv {position:relative;width:100%;height:100%;}
 #xiv-content  {position:relative;width:100%;height:100%;}
 
 /* MAIN-AREA */
-#xiv-hd     {position:fixed;width:100%;box-sizing:border-box}
-#xiv-ft     {position:fixed;width:100%;box-sizing:border-box;overflow:auto}
-#xiv-screen {
-  position:fixed;box-sizing:border-box;width:100%;height:100%; top:0; left: 0;
-  box-shadow:inset 0 0 50px #000000;}
-
+#xiv-hd     {position:fixed;z-index:100;width:100%;box-sizing:border-box}
+#xiv-ft     {position:fixed;z-index:100;width:100%;box-sizing:border-box;overflow:auto}
+#xiv-screen {position:fixed;width:100%;height:100%;box-sizing:border-box;}
 #xiv-hd     {top:0;left:0}
 #xiv-screen {top:0;left:0;max-height:100vh;max-width:100vw;overflow:hidden;} /*IE9~11, EDGE : hidden*/
 #xiv-ft     {bottom:0;left:0}
-
-#xiv-hd     {z-index:100;}
-#xiv-ft     {z-index:100;}
-.secure-scroll {pointer-events: none;}
 
 #xiv-hd     {
   background:linear-gradient(to bottom, RGBA(0, 0, 0, 0.5) 0, RGBA(0, 0, 0, 0.5) 30px, RGBA(0, 0, 0, 0));
 }
 #xiv-ft     {
-  background:linear-gradient(to top, RGBA(0, 0, 0, 0.5), RGBA(0, 0, 0, 0));
+  background:linear-gradient(to top, RGBA(0, 0, 0, 0.5), RGBA(0, 0, 0, 0.5) 50px, RGBA(0, 0, 0, 0));
 }
+#xiv-screen {box-shadow:inset 0 0 50px #000000;}
 
 /*HEAD*/
 #xiv-hd       {overflow:auto;font-size:22px;line-height:34px;padding:10px 0 50px}
@@ -86,11 +88,15 @@ html.toOriginal {overflow:visible}
 .xiv-opt-bts > div {float:left;text-align:center}
 .xiv-opt-bts > div i {display:block;width:34px;line-height:34px}
 #xiv-bt-back  {float:right;background:RGBA(125, 125, 125,0.3);line-height:34px}
-#xiv-title-wp {clear:both;float:left;padding:3px 15px;font-size:38px;line-height:44px;font-weight:300;max-width:340px}
+#xiv-title-wp {clear:both;float:left;padding:3px 15px;font-size:40px;line-height:54px;font-weight:300;max-width:340px}
 #xiv-title-wp i {display:inline-block;width:34px;text-align:center}
-
+/*#xiv-title {border-bottom:3px solid #fff}*/
+#xiv-title-wp  {visibility:hidden;opacity:0;letter-spacing:5px;transform:scale(1.18, 1.4)}
+.status-ready, 
+.status-complete  #xiv-title-wp {visibility:visible;opacity:1;letter-spacing:0;transform:scale(1, 1)}
+.handheld #xiv-bt-screen {display:none}
 /*FOOT*/
-#xiv-ft          {padding:30px 15px 10px;}
+#xiv-ft          {padding:30px 15px 30px;}
 #xiv-description-wp {float:left;position:relative;visibility:none;padding-top:10px}
 #xiv-description-wp {overflow:hidden;font-size:14px;margin:0 4px 4px 0}
 #xiv-description-wp::before {position:absolute;z-index:1;content:'';top:0;left:50%;width:0;height:5px;background:#E7E7E7;box-shadow:0 0 5px RGBA(0,0,0, 0.65);border-radius:5px;}
@@ -115,6 +121,15 @@ html.toOriginal {overflow:visible}
   #xiv-opt      {float:right;margin-top:10px}
   #xiv-copy-wp  {clear:none;float:right}
 }
+@media only screen and (min-width: 800px) {
+  #xiv-title-wp {padding-left:30px;padding-right:30px}
+  #xiv-ft {padding-left:30px;padding-right:30px;padding-bottom:30px}
+}
+@media only screen and (min-width: 1023px) {
+  #xiv-title-wp {padding-left:50px;padding-right:50px}
+  #xiv-ft {padding-left:50px;padding-right:50px;padding-bottom:50px}
+}
+
 
 /* MISC */
 
@@ -147,9 +162,48 @@ html.toOriginal {overflow:visible}
 
 
 /* EFFECTS */
-.toOriginal #xnav {transition:all 500ms ease-in, opacity 700ms 500ms ease-in}
-.toOriginal #nav-back {transition:opacity 600ms 300ms ease-out, background-position 800ms ease-out}
+.status-ready #xiv-title-wp {transition:all 2300ms 1500ms ease, padding 300ms 0ms ease}
+.status-complete #xiv-title-wp {transition:all 2300ms 1500ms  ease, padding 300ms 0ms ease}
+.toOriginal #xnavigator {transition:all 1000ms 500ms ease}
+.toOriginal #xiv-hd {transition:all 1000ms ease}
+.toOriginal #xiv-ft {transition:all 1000ms ease}
+.toOriginal #xnav {transition:all 500ms 400ms ease-out, opacity 700ms 700ms ease-in}
+.toOriginal #nav-back {transition:opacity 600ms 200ms ease-out, background-position 800ms ease-out}
 .toOriginal #original-close-bt {transition:all 800ms 800ms ease-in}
 .toOriginal #nav-viewport {transition:opacity 300ms 1000ms ease-out}
-.status-complete #xiv-description-wp::before {transition:all 1200ms 500ms ease, border 800ms 900ms ease}
-.status-complete #xiv-description {transition:all 1500ms 2000ms ease-out}
+.status-complete #xiv-description-wp::before {transition:all 1400ms 3400ms ease, border 1000ms 3600ms ease}
+.status-complete #xiv-description {transition:all 1500ms 4800ms ease-out}
+.status-complete #xiv-screen-image {transition:all 1500ms 500ms ease-out, filter 700ms 800ms ease-in}
+
+
+/* DEBUG */
+
+#debug {
+  display:none;
+  pointer-events: none;
+  z-index: 10000;
+  position:fixed;
+  top: 110px;
+  left: 30px;
+  background: RGBA(0,0,0,0.25);
+  color: #fff;
+  font-size: 12px;
+  padding: 10px;
+}
+
+
+/* WEBKIT SCROLLBAR */
+::-webkit-scrollbar-button:vertical:start:increment,
+::-webkit-scrollbar-button:vertical:end:decrement {
+    display: none;
+}
+::-webkit-scrollbar {width: 10px; height:10px;}
+::-webkit-scrollbar-track {
+    background:RGBA(255,255,255,0.35);
+}
+::-webkit-scrollbar :corner-present {
+}
+::-webkit-scrollbar-thumb {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5); 
+    background:RGBA(0,0,0,0.55);
+}
