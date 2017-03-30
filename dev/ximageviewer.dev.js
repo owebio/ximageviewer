@@ -1,6 +1,5 @@
 
-
-var collection = []
+var collection = [];
 
 var source = {
   title      : undefined,
@@ -47,34 +46,44 @@ var XIV = {
     var navElem = this.navElem = $("#nav-back-image");
     var navMain = this.navMain = $("#nav-back");
     var navPort = this.navPort = $("#nav-viewport");
+
+    // Messy Things : IOS SAFARI's touchmove
+    if (XIV.isHandheld && XIV.isMobileSafari) {
+      $("#xiv-mode-main").bind('touchmove',function(e) {e.preventDefault();});
+    }
+
+    // PRE LOADER : VIRTUAL IMAGE 
     var virtualImage = this.virtualImage = new Image();
     virtualImage.onload  = this.onload;
     virtualImage.onerror = this.error;
     virtualImage.src     = source.url;
-    backElem.get(0).src  = source.url;
-    navElem.get(0).src   = source.url;
-    elem.get(0).src      = source.url;
-    $("#xiv-bt-original").click(XIV.toOriginal);
+
+    $("#xiv-bt-original").hammer().bind("tap", XIV.toOriginal);
+    //elem.hammer().bind("doubletap", XIV.toOriginal);
+    //navMain.hammer().bind("doubletap", XIV.toMain);
+    //$("#xiv-bt-original").click(XIV.toOriginal);
+    
     $("#xnav").mousedown(function(){
       $(this).toggleClass("bottom");
     });
     var clicked = false;
-    $("#xiv-screen-image").click(function(){
+    elem.click(function(){
       clicked = false;
-      XIV.toggleMode();
+      XIV.toOriginal();
     })
     navMain.click(function(){
-      if (clicked) XIV.toggleMode();
+      if (clicked) XIV.toMain();
       clicked = true;
       setTimeout(function(){clicked = false}, 300);
-    });;
-    $("#original-close-bt").click(XIV.toMain);
-    $("#xiv-bt-screen").click(XIV.toToggleFullScreen);
-    $(window).scroll(XIV.navDraw); /* DESKTOP */
-    $("body").scroll(XIV.navDraw); /* HANDHELD */
+    });//*/
+
+    $("#original-close-bt").hammer().bind('tap', XIV.toMain);
+    $("#xiv-bt-screen").hammer().bind('tap', XIV.toToggleFullScreen);
+    //$(window).scroll(XIV.navDraw); /* DESKTOP */
+    //$("body").scroll(XIV.navDraw); /* HANDHELD */
     $(window).resize(XIV.navDraw);
-    $(window).resize(XIV.adjustCover);
-    mouseScroll.init();
+    //$(window).resize(XIV.adjustCover);
+    //mouseScroll.init();
     XIV.status = "READY";
     $("body").removeClass('status-init').addClass("status-ready");
   },
@@ -82,6 +91,11 @@ var XIV = {
     console.log("ERROR!!! : ", e);
   },
   onload   : function(e) {
+
+    XIV.backElem.get(0).src  = source.url;
+    XIV.navElem.get(0).src   = source.url;
+    XIV.elem.get(0).src      = source.url;
+
     virtualImage  = XIV.virtualImage;
     source.height = virtualImage.height;
     source.width  = virtualImage.width;
@@ -92,7 +106,27 @@ var XIV = {
     XIV.adjustCover();
     XIV.status = 'COMPLETE';
     $("body").removeClass('status-ready').addClass("status-complete");
+	  var iScroll = XIV.iScroll = new IScroll('#viewmode', { 
+      zoom: true,
+      mouseWheel: true,
+      scrollX: true,
+      freeScroll: true,
+      wheelAction: 'zoom'});
+    iScroll.on('scrollEnd', XIV.navDraw);
+    iScroll.on('zoomEnd', XIV.navDraw);
+    $("#viewmode").mousemove(XIV.navDraw);
   }
+  /*
+  iScroll.on('zoomEnd', function(){
+    return true
+  });
+  /*
+  iScroll.on('scrollEnd', function(){
+    XIV.navDraw();
+  });
+  iScroll.on('scrollStart', function(){
+    XIV.navDraw();
+  });*/
 }
 
 /* INFO // SETUP  */
@@ -179,15 +213,15 @@ XIV.navDraw   = function() {
   if (XIV.mode != "ORIGINAL") return this;
   // element.getBoundingClientRect().height
   var rect    = XIV.navMain.get(0).getBoundingClientRect();
-  var ratio   = Math.max( //it works after transform's scaling.
-    XIV.navElem.get(0).offsetHeight / rect.height,
-    XIV.navElem.get(0).offsetWidth  / rect.width
-  );
-  var top     = rect.top;
-  var left    = rect.left;
+  var ratio   = Math.max( //it works better when scaled.
+    XIV.navElem.get(0).offsetHeight / (source.height * XIV.iScroll.scale),
+    XIV.navElem.get(0).offsetWidth  / (source.width * XIV.iScroll.scale)
+  ) ;
+  var top     = rect.top  ;
+  var left    = rect.left ;
   var navPort = XIV.navPort.get(0);
-  navPort.style.top    = -top  * ratio + 'px';
-  navPort.style.left   = -left * ratio + 'px';
+  navPort.style.top    = - top  * ratio + 'px';
+  navPort.style.left   = - left * ratio + 'px';
   navPort.style.height = window.innerHeight * ratio + 'px';
   navPort.style.width  = window.innerWidth * ratio + 'px';
 }
@@ -237,7 +271,7 @@ var mouseScroll = {
       if (!_DESKSCROLL.using) return;
       if (XIV.mode != 'ORIGINAL') return;
       var current = _DESKSCROLL;
-      mouseScroll.move(current._x + current.x - e.clientX, current._y + current.y - e.clientY);
+      //mouseScroll.move(current._x + current.x - e.clientX, current._y + current.y - e.clientY);
     });
   }
 }
@@ -305,5 +339,17 @@ if (isHandheld()) {
   XIV.isHandheld = false;
 }
 
+window.addEventListener("load", function() { window. scrollTo(0, 0); });
 $("body").addClass("status-init");
+
+
+function isMobileSafari() {
+  var ua = window.navigator.userAgent
+  var iOS = !!ua.match(/iPad/i) || !!ua.match(/iPhone/i);
+  var webkit = !!ua.match(/WebKit/i);
+  var iOSSafari = iOS && webkit && !ua.match(/CriOS/i);
+  return iOSSafari
+}
+
+XIV.isMobileSafari = isMobileSafari(); 
 

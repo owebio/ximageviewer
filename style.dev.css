@@ -16,7 +16,7 @@ body {font-family: 'Noto Sans KR', 'Roboto', sans-serif}
 body {color:#EBEBEB;text-shadow:0 0 10px #000, 1px 1px #1C1C1C, 0 0 1px #000}
 
 /* POSITIONING CLASSES */
-#xiv-screen-image {position:fixed;display:block;box-shadow:0 0 35px #000;user-select: none;-ms-user-select: none;}
+#xiv-screen-image {position:fixed;display:block;box-shadow:0 0 5px #000, 0 0 35px #000;user-select: none;-ms-user-select: none;}
 #xiv-screen-image {box-sizing:border-box;top:50%;left:50%;max-width:100%;max-height:100%}
 #xiv-screen-image {transform:translate(-50%, -50%);filter:blur(5px)}
 #xiv-screen-image {opacity:0;}
@@ -59,7 +59,7 @@ html.toOriginal {overflow:visible}
 .toOriginal #xiv-backcover-image {opacity:0.20;}
 .toOriginal #xnav {visibility:visible;z-index:200;opacity:1;}
 .toOriginal #nav-viewport {opacity:0.75}
-.toOriginal #xiv-hd {transform:translate(0, -100%)}
+.toOriginal #xiv-hd {box-shadow:none;opacity:0}
 .toOriginal #xiv-ft {transform:translate(0, 100%)}
 
 /* GUIDER */
@@ -67,9 +67,9 @@ html.toOriginal {overflow:visible}
 #xiv-content  {position:relative;width:100%;height:100%;}
 
 /* MAIN-AREA */
-#xiv-hd     {position:fixed;z-index:100;width:100%;box-sizing:border-box}
+#xiv-hd     {position:fixed;z-index:100;width:100%;box-sizing:border-box;opacity:1}
 #xiv-ft     {position:fixed;z-index:100;width:100%;box-sizing:border-box;overflow:auto}
-#xiv-screen {position:fixed;width:100%;height:100%;box-sizing:border-box;}
+#xiv-screen {position:absolute;width:100%;height:100%;box-sizing:border-box;}
 #xiv-hd     {top:0;left:0}
 #xiv-screen {top:0;left:0;max-height:100vh;max-width:100vw;overflow:hidden;} /*IE9~11, EDGE : hidden*/
 #xiv-ft     {bottom:0;left:0}
@@ -111,8 +111,8 @@ html.toOriginal {overflow:visible}
 #xiv-backcover-image {position:absolute;top:50%;left:50%;}
 #xiv-backcover-image {transform:translate(-50%, -50%)}
 #xiv-backcover-image {min-width:100%;min-height:100%;}
-#xiv-backcover-image {opacity:0.35; filter:blur(2px) grayscale(100%)}
-#xiv-backcover-image {transition:all 500ms ease}   
+#xiv-backcover-image {opacity:0.35;filter: blur(2px) grayscale(100%)}
+#xiv-backcover-image {transition:all 800ms 500ms ease}   
 
 /* DEVICE */
 @media only screen and (min-width: 569px) {
@@ -164,13 +164,13 @@ html.toOriginal {overflow:visible}
 /* EFFECTS */
 .status-ready #xiv-title-wp {transition:all 2300ms 1500ms ease, padding 300ms 0ms ease}
 .status-complete #xiv-title-wp {transition:all 2300ms 1500ms  ease, padding 300ms 0ms ease}
-.toOriginal #xnavigator {transition:all 1000ms 500ms ease}
-.toOriginal #xiv-hd {transition:all 1000ms ease}
-.toOriginal #xiv-ft {transition:all 1000ms ease}
+.toOriginal #xnavigator {}
+.toOriginal #xiv-hd {transition:all 800ms ease}
+.toOriginal #xiv-ft {transition:all 800ms ease}
 .toOriginal #xnav {transition:all 500ms 400ms ease-out, opacity 700ms 700ms ease-in}
-.toOriginal #nav-back {transition:opacity 600ms 200ms ease-out, background-position 800ms ease-out}
+/*.toOriginal #nav-back {transition:opacity 2100ms 1500ms ease-out, background-position 1800ms ease-out}*/
 .toOriginal #original-close-bt {transition:all 800ms 800ms ease-in}
-.toOriginal #nav-viewport {transition:opacity 300ms 1000ms ease-out}
+.toOriginal #nav-viewport {transition:opacity 500ms 2000ms ease-out}
 .status-complete #xiv-description-wp::before {transition:all 1400ms 3400ms ease, border 1000ms 3600ms ease}
 .status-complete #xiv-description {transition:all 1500ms 4800ms ease-out}
 .status-complete #xiv-screen-image {transition:all 1500ms 500ms ease-out, filter 700ms 800ms ease-in}
@@ -206,4 +206,19 @@ html.toOriginal {overflow:visible}
 ::-webkit-scrollbar-thumb {
     -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5); 
     background:RGBA(0,0,0,0.55);
+}
+
+
+#viewmode {
+  position: absolute;
+  top:0;left:0;
+  width:100%;height:100%;
+  overflow:hidden;
+  z-index:-1;
+}
+#viewmode #nav-back {
+  position: absolute;
+}
+.toOriginal #viewmode {
+  z-index:1;
 }

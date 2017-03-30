@@ -1,5 +1,5 @@
 var imageCollection = [
-  {title: 'Spanish Dish', url: "sample/sample_spanish_dish.jpg"},
+  {title: 'El Gazpacho', url: "sample/sample_spanish_dish.jpg"},
   {title: 'Cuba', url: "sample/sample_cuba.jpg"},
   {title: 'Thailand', url: "sample/sample_thailand.jpg"},
   {title: 'HongKong', url: "sample/hongkong.jpg"},

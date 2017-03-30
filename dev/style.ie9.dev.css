@@ -1,0 +1,10 @@
+#xiv-screen-image {
+  filter: progid:DXImageTransform.Microsoft.blur(pixelradius=5);
+}
+.status-complete #xiv-screen-image {
+  filter: progid:DXImageTransform.Microsoft.blur(enabled = false);
+}
+#xiv-backcover-image {
+  filter : progid:DXImageTransform.Microsoft.blur(pixelradius=5)
+           progid:DXImageTransform.Microsoft.BasicImage(grayscale=1)
+}

@@ -4,25 +4,30 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge;">
   <meta name="mobile-web-app-capable" content="yes">
-  <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+  <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0, minimal-ui">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="xImageViewer">
+  <meta name="application-name" content="xImageViewer">
   <title> ximageviewer </title>
   <meta http-equiv="X-UA-Compatible" content="IE=11; IE=10; IE=9;"/>
   <link href="style.dev.css" rel="stylesheet">
-  <script src="hammer.min.js"></script>
+  <!--[if IE 9]><link href="style.ie9.dev.css" rel="stylesheet"><![endif]-->
+  <!--[if IE 10]><link href="style.ie10.dev.css" rel="stylesheet"><![endif]-->
   <script
   src="https://code.jquery.com/jquery-3.2.1.min.js"
   integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
   crossorigin="anonymous"></script>
+  <script src="hammer.min.js"></script>
+  <script src="hammer-time.min.js"></script>
+  <script src="hammer-jquery.js"></script>
+  <script src="iscroll-zoom.js"></script>
   <script src="https://use.fontawesome.com/d1e0079ea8.js"></script>
   <script src="ximageviewer.dev.js"></script>
 </head>
-<body>
-<script>
-</script>
-<div id="debug">
-</div>
+<body id="xiv-body">
+<div id="debug"></div>
+
 <div id="xiv">
 <!-- navigator
 <div id="xiv-navigator">
@@ -36,6 +41,7 @@
 </div>
 
 <!-- xiv-hd -->
+<div id="xiv-mode-main">
 <div id="xiv-hd">
   <div id="xiv-opt" class="xiv-opt-bts">
     <div id="xiv-bt-home"><a href="//github.com/owebio/ximageviewer"><i class="fa fa-github"></i></a></div>
@@ -50,7 +56,7 @@
 </div>
 <!-- xiv-screen -->
 <div id="xiv-screen">
-  <img id="xiv-screen-image">
+  <img id="xiv-screen-image" class="grayscale">
 </div>
 <!-- xiv-ft -->
 <div id="xiv-ft">
@@ -65,7 +71,7 @@
     <i class="fa fa-copyright"></i><span id="xiv-copyright">oneiroi</span>
   </div>
 </div>
-
+</div>
 
 <div id="xnav" class="bottom">
   <div id="xnavigator">
@@ -74,10 +80,16 @@
   </div>
 </div>
 <!-- 'unselectable' for chrome's slow mousemove event -->
-<div id="nav-back" unselectable="on"></div>
+
+<div id="viewmode">
+  <div id="nav-back" unselectable="on"></div>
+</div>
+
 <div id="original-close-bt">X</div>
 
 </div>
+
+
 <script src="index.dev.js"></script>
 </body>
 </html>
