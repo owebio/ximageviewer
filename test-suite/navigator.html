@@ -1,0 +1,450 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge;" />
+  <meta name="viewport" content="width=device-width, user-scalable=no">
+  <title> ximageviewer </title>
+  <meta http-equiv="X-UA-Compatible" content="IE=11; IE=10; IE=9;"/>
+  <script
+  src="https://code.jquery.com/jquery-3.2.1.min.js"
+  integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+  crossorigin="anonymous"></script>
+  <script src="../dev/iscroll-zoom.js"></script>
+  <script src="https://use.fontawesome.com/d1e0079ea8.js"></script>
+  <style>
+  @import url(//fonts.googleapis.com/earlyaccess/notosanskr.css); /* 'Noto Sans KR' */
+  @import url(//fonts.googleapis.com/css?family=Roboto:100,400); /* 'Roboto' */
+
+  p, h1, h2, h3, h4, h5 {margin:0;padding:0}
+  html, body, #wrap {margin:0;padding:0;height:100%}
+  body {
+   background: #000;
+   background: linear-gradient(to left, #232526, #141414);
+   font-family: 'Noto Sans KR', sans-serif;
+   -webkit-overflow-scrolling: touch;
+   color: #fff;
+  }
+   #wrapper {position:absolute;width:100%;z-index:1;min-height:100vh;min-width:100vw}
+   #wrapper {overflow:hidden}
+   #nada {position: absolute;z-index: 1;min-height:100vh;min-width:100vw}
+   /* 위 nada는 반드시 absolute 에서만 작동하고 width는 설정되지 않아야 한다.*/
+   .xiv-item {position:relative;display:none}
+   .xiv-item.active {display:block;min-width:100vw;min-height:100vh}
+   div.xiv-item {background-repeat:no-repeat; background-position:50% 50%}
+   div.xiv-ghost-space {position:relative;width:100%;height:100%;background:#f00}
+
+  #hud {position:fixed;z-index:1000;top:0;left:0;line-height:42px;overflow:auto;box-sizing:border-box;padding:5px 10px;color:#EBEBEB;text-shadow:-1px -1px #000, 1px 1px #000, 0 0 30px #000;font-size:18px}
+  #hud span {float:left;min-width:80px;padding:0 5px;font-weight:800;text-align:center;cursor:pointer;background:RGBA(0,0,0,0.1);margin-right:-1px; border:1px solid #202020;font-size:16px;font-family:roboto; font-weight:100}
+  div.hud-bt {padding:5px 0 ;clear:both}
+  #hud span i {margin-right:3px;}
+  #hud span:hover {background:RGBA(0,0,0,0.25)}
+  #hud span.active {background:RGBA(0,0,0,0.5);color:#fff;font-weight:800}
+  #desc {font-family:'Roboto';clear:left;text-shadow:1px 1px #000;line-height:2}
+
+  #title {font-family:'Roboto';font-weight:100;font-size:34px;line-height:68px;padding:5px 10px;color:#fff;position:relative}
+  #title:before {content:'';position:absolute;width:45px;height:5px;background:#fff;top:8px;left:0;}
+  #exp {position:absolute;left:0;bottom:0;margin:0 15px 20px;padding:0 15px;font-size:14px;line-height:1.25;font-family:'Roboto'}
+  #exp {border-left:5px solid #fff;float:left;box-sizing:border-box;text-shadow:1px 1px #000;}
+  #exp {-webkit-backface-visibility: hidden;}
+
+  #hud {display:none}
+  body.ready #hud {display:block}
+  #wrapper.toCenter img.active {display:inline-block}
+  #wrapper.toCenter {text-align:center;}
+  #hud h3 {font-size:24px;font-weight:500;line-height:38px;}
+  table {border-collapse:collapse}
+  </style>
+</head>
+<body>
+
+
+
+
+
+<div id="hud">
+  <div id="title">Navigator</div>
+  <span id="prev" data-desc="Prev"> <i class="fa fa-arrow-left" aria-hidden="true"></i></span>
+  <!--<span id="toReset" data-desc="Reset"> X </span> -->
+  <span id="next" data-desc="Next"> <i class="fa fa-arrow-right" aria-hidden="true"></i> </span>
+  <div id="desc">&nbsp;</div>
+  <h3>Position</h3>
+  <div id='hud-valign' class='hud-bt'>
+    <span id="toTop" data-desc="vertical middle"><i class="fa fa-chevron-up"></i>Top</span>
+    <span id="toMiddle" data-desc="vertical middle"><i class="fa fa-arrows-v"></i>Middle</span>
+    <span id="toBottom" data-desc="vertical middle"><i class="fa fa-chevron-down"></i>Bottom</span>
+  </div>
+  <div id='hud-align' class='hud-bt'>
+    <span id="toTop" data-desc="vertical middle"><i class="fa fa-chevron-left"></i>Left</span>
+    <span id="toCenter" data-desc="horizontal center"><i class="fa fa-arrows-h"></i>Center</span>
+    <span id="toTop" data-desc="vertical middle"><i class="fa fa-chevron-right"></i>Right</span>
+  </div>
+  <h3>Size</h3>
+</div>
+
+
+
+<div id="wrapper">
+  <div id="nada">
+    <img class="xiv-item  active" src="../sample/sample_barcelona.jpg">
+    <div class="xiv-item" style= 'width:726px;height:483px;background-image:url(../sample/sample_cuba.jpg)' class="active"></div>
+    <img class="xiv-item" src="../sample/sample_cuba.jpg">
+    <img class="xiv-item" src="../sample/sample_paris.jpg">
+    <img class="xiv-item" src="../sample/HongKong.jpg">
+    <!--
+    <div class="xiv-item" data-src="../sample/sample_barcelona.jpg" class="active"></div>
+    <div class="xiv-item" data-src="../sample/sample_paris.jpg"></div>
+    <div class="xiv-item" data-src="../sample/sample_cuba.jpg"></div>
+    <div class="xiv-item" data-src="../sample/HongKong.jpg"></div>
+    -->
+  </div>
+</div>
+
+<style>
+#xNavi {position:fixed; z-index: 1000; top:30px;right:30px;width:30vw;border:3px solid #1C1C1C;box-sizing:border-box;opacity:0.85}
+#xNavi-image {position:relative;width:100%;display:block;}
+#xNavi-viewport{position:absolute;top:0;left:0;}/*#xNavi-viewport{max-width:100%;max-height:100%}*/
+#xNavi-viewport{margin-left:-3px;margin-top:-3px;border: 3px solid #f00}
+#xNavi-viewport{transition:all 100ms ease;visibility:hidden;}
+
+#xNavi-rviewport{position:absolute;top:50%;left:50%;}/*#xNavi-viewport{max-width:100%;max-height:100%}*/
+#xNavi-rviewport{border: 1px solid #FFFF00; box-shadow:0 0 30px #000;width:1px;height:1px;transform:translate(-50%, -50%);}
+#xNavi-rviewport{transition:all 100ms ease;box-sizing:border-box;}
+#xNavi-rviewport{}
+#xNavi-rviewport-cursor {
+  position:absolute;
+  top:0; left:0;
+  border: 5px solid RGBA(255, 255, 255, 1);
+  ;box-sizing:border-box;
+  transform:translate(-1px, -1px);
+  transition: all 100ms ease;
+}
+</style>
+<style>
+#xDebug {position:fixed; padding:8px; z-index: 1000;min-width:250px;bottom:20px;left:20px;background:RGBA(0,0,0,0.45);color:#fff}
+table {border-collapse:collapse;width:100%;}
+table th, table td {border:1px solid #969696;padding:5px 8px;font-size:12px}
+#xNavi-info {position:absolute;left:0;bottom:0;width:100%;transform:translate(0, 115%);text-shadow: 1px 1px #000, -1px 0 #000, 0 1px #000, 1px 0 #000, 0 -1px #000, -1px -1px #000}
+#xNavi-info th {width: 2.5em}
+#xNavi-info th,
+#xNavi-info td {border-color:#303030}
+#xNavi-info thead {background:RGBA(32, 128, 208, 0.85)}
+#xNavi-info tbody {background:RGBA(143, 0, 143, 0.75)}
+</style>
+
+
+<div id="xNavi">
+  <img id="xNavi-image">
+  <div id="xNavi-rviewport">
+    <div id="xNavi-rviewport-cursor"></div>
+  </div>
+  <div id="xNavi-viewport"></div>
+  <div id='xNavi-info'>
+    <table>
+      <thead>
+        <tr><th id="su" colspan="4"></th></tr>
+        <tr><th>x</th><td id='ox'></td><th>y</th><td id='oy'></td></tr>
+        <tr><th>w</th><td id='ow'></td><th>h</th><td id='oh'></td></tr>
+        <tr><th>sW</th><td id='sw'></td><th>sH</th><td id='sh'></td></tr>
+        <tr><th>wW</th><td id='wW'></td><th>wH</th><td id='wH'></td></tr>
+      </thead>
+      <tbody>
+      <tr><th>iX</th><td id='ix'></td><th>iY</th><td id='iy'></td></tr>
+      <tr><th>X</th><td id='nx' style='width:7.5em'></td><th>Y</th><td id='ny'></td></tr>
+      <tr><th>W</th><td id='nw'></td><th>H</th><td id='nh'></td></tr>
+      <tr><th><i class="fa fa-search-plus" aria-hidden="true"></i></th><td id='nz'></td><th>R</th><td id='vz'></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div id="xDebug">
+<table id='xDebug-table'>
+  <tr><th></th><td></td><th></th><td><td></tr>
+</table>
+</div>
+
+<style>
+#typeInfo {position:fixed; bottom:15px;right:15px;z-index:30; color:#fff; text-shadow:1px 1px #313131, -1px -1px #313131, 0 0 15px #000;min-width: 250px; background:rgba(0,0,0,0.08);padding:5px;}
+#typeInfo table {min-width: 100%}
+</style>
+
+<div id="typeInfo">
+<table>
+<tr><th>type</th><td></td></tr>
+</table>
+</div>
+
+
+
+<script>
+var reset = function(){
+  $("#wrapper").scrollTop(0).scrollLeft(0);
+  $("#wrapper").get(0).className = '';
+  $("#hud span").removeClass = 'active';
+  $("#wrapper .xiv-item.active").get(0).className = 'xiv-item';
+  $("#desc").html("&nbsp;");
+}
+
+$("#prev").click(function(){
+  var active = $(".xiv-item.active");
+  reset();
+  if (active.prev().length) active.prev().addClass('active');
+  else $(".xiv-item").last().addClass('active');
+  iScroll.refresh();
+  xNavi.update();
+});
+$("#next").click(function(){
+  var active = $(".xiv-item.active");
+  reset();
+  if (active.next().length) active.next().addClass('active');
+  else $(".xiv-item").first().addClass('active');
+  iScroll.refresh();
+  xNavi.update();
+});
+
+xNavi = {}
+xNavi.update = function(src) {
+  var src = src || $(".xiv-item.active")[0].src || $("div.active").css('backgroundImage').replace('url("','').replace('")','');
+  var virtualImage = new Image();
+  virtualImage.onload = xNavi.onVload;
+  virtualImage.src = src;
+}
+xNavi.onVload = function() {
+  var _src = this.src.split('/');
+  source.url = _src[_src.length-1];
+  source.width  = this.width;
+  source.height = this.height;
+  vElemIMG.onload = xNavi.onload ;
+  vElemIMG.src = _src.join('/');
+}
+xNavi.onload = function() {
+  var _src = this.src.split('/');
+  vsource.url = _src[_src.length-1];
+  vsource.width  = this.width;
+  vsource.height = this.height;
+  vsource.scale  =  this.height /source.height;
+  totalUpdater();
+}
+var viewerElem = $("#nada")[0]
+
+xNavi.rdraw = function() {
+  var _data = viewerElem.getBoundingClientRect();
+
+  x =  - _data.left
+  y =  - _data.top
+
+  xNavi.routput(x, y, width, height);
+}
+
+
+xNavi.draw = function() {
+  var _data = viewerElem.getBoundingClientRect();
+  var SI = iScroll.scale;
+  var SV = vsource.scale;
+  var SW = window.innerWidth / _data.width;
+  var x = - _data.left;
+  var y = - _data.top;
+  var wH = window.innerHeight;
+  var wW = window.innerWidth;
+  var isBigHViewport = source.height < wH;
+  var isBigWViewport = source.width  < wW;
+  var startX = startY = 0;
+
+  width =  wW * SV / SI ;
+  height = wH * SV / SI;
+
+  var SS = window.innerHeight / height;
+  var ST =  wW / _data.width;
+
+  var VR = vElemIMG.width / source.width;
+
+
+  if (isBigHViewport)  { // (wW/SI - width)/2 (중간값)
+    x = (_data.width - x) / _data.width // (중간값)
+    var _x = vElemIMG.width - (vElemIMG.width / 2) * x
+    _x = - (( vElemIMG.width / 2) - _x)
+    // SW  * SV / SI
+    //startX = ((width - vsource.width)/2 ) * ST
+    x = _x;
+  } else {
+    x =  x * SV * SI;
+  }
+
+  if (isBigWViewport)  {
+    startY -= (height - vElemIMG.height )/2
+    //startY = ((height - vsource.height) /2 )
+    y = y / SI * VR;
+  } else {
+    y = y * SV / SI;
+  }
+
+
+  x = startX + x;
+  y = startY + y;
+  //width = vsource.width / vsource.scale / iScroll.scale;
+  //height = vsource.height / vsource.scale / iScroll.scale;
+
+  xNavi.output(x, y, width, height);
+
+}
+
+xNavi.output = function(x, y, width, height) { // viewport
+  var elem = $("#xNavi-viewport");
+  var nImg = $("#xNavi-image");
+  var vHeight = nImg.height();
+  var vWidth  = nImg.width();
+  var block = false;
+
+  if (block) {
+    var x = (x < 0) ? 0 : x ;
+    var y = (y < 0) ? 0 : y ;
+    var width   = (x + width > vWidth) ? vWidth - x : width;
+    var height  = (y + height > vHeight) ? vHeight - y : height;
+  }
+
+  var rElem   = elem[0];
+  rElem.style.top  = y + 'px';
+  rElem.style.left = x + 'px';
+  rElem.style.width = width + 'px';
+  rElem.style.height = height + 'px';
+  return this;
+}
+
+xNavi.routput = function(x, y, width, height) { // viewport
+  var elem = $("#xNavi-rviewport-cursor");
+  var belem = $("#xNavi-rviewport");
+  var nImg = $("#xNavi-image");
+  var vHeight = nImg.height();
+  var vWidth  = nImg.width();
+  var block = false;
+  var _RATIO_SCALES = iScroll.scale;
+  var _RATIO_IMAGE = vWidth / source.width;
+
+  if (block) {
+    var x = (x < 0) ? 0 : x ;
+    var y = (y < 0) ? 0 : y ;
+    var width   = (x + width > vWidth) ? vWidth - x : width;
+    var height  = (y + height > vHeight) ? vHeight - y : height;
+  }
+
+  var rElem   = elem[0];
+  var bbelem  = belem[0]
+  var iS = iScroll.scale;
+
+  if (window.innerWidth > source.width) {
+    _width = window.innerWidth * vWidth / source.width;
+    width = width;
+  } else {
+    _width =  vWidth;
+    width = window.innerWidth * (vWidth / source.width )/ _RATIO_SCALES;
+    x = (x / _RATIO_SCALES ) * _RATIO_IMAGE
+  }
+
+
+  if (window.innerHeight > source.height) {
+    _height = window.innerHeight * vHeight / source.height;
+    height = height;
+  } else {
+    _height = vHeight;
+    height = vHeight * ( window.innerHeight / source.height ) / _RATIO_SCALES;
+    y =   (y / _RATIO_SCALES ) * _RATIO_IMAGE
+  }
+
+   //VIRTUAL AREA
+
+  bbelem.style.width  = _width  + 'px';
+  bbelem.style.height = _height + 'px';
+
+  rElem.style.top  = y + 'px';
+  rElem.style.left = x + 'px';
+
+  rElem.style.width = width + 'px';
+  rElem.style.height = height + 'px';
+
+  $("#nx").html(_parseInt(x));
+  $("#ny").html(_parseInt(y));
+  $("#nw").html(_parseInt(width));
+  $("#nh").html(_parseInt(height));
+  $("#nz").html(_parseInt(iS));
+  return this;
+}
+
+var iScroll;
+var source = {};
+var vsource = {};
+var vElemIMG = $("#xNavi-image")[0];
+$(document).ready(function() {
+  iScroll = new IScroll('#wrapper', {
+    zoom: true,
+    mouseWheel: true,
+    scrollX: true,
+    freeScroll: true,
+    wheelAction: 'zoom'
+  });
+  var i = 0;
+  var idIntervalScroll = undefined;
+  iScroll.on('scrollStart', function(){
+    if (idIntervalScroll) {
+      clearInterval(idIntervalScroll);
+      idIntervalScroll = undefined;
+    }
+    idIntervalScroll = setInterval(function(){
+      totalUpdater();
+    }, 100);
+  });
+  iScroll.on('scrollEnd', function(){
+    if (idIntervalScroll) {
+      clearInterval(idIntervalScroll);
+      idIntervalScroll = undefined;
+    }
+    totalUpdater();
+  });
+  iScroll.on('zoomEnd', totalUpdater);
+  $("body").addClass("ready");
+  xNavi.update();
+});
+xDebugUpdate = function(e) {
+  setTimeout(function() {
+    var _data = viewerElem.getBoundingClientRect();
+    var i = iScroll;
+    $("#x").html(_parseInt(iScroll.x));
+    $("#y").html(_parseInt(iScroll.y));
+    $("#s").html(_parseInt(iScroll.scale));
+    $("#wW").html(window.innerWidth);
+    $("#wH").html(window.innerHeight);
+    $("#su").html(source.url);
+    $("#vw").html(vElemIMG.width);
+    $("#vh").html(vElemIMG.height);
+    $("#vs").html(_parseInt(vElemIMG.width/source.width));
+    $("#sw").html(_parseInt(source.width));
+    $("#sh").html(_parseInt(source.height));
+    $("#ox").html(_parseInt(_data.left));
+    $("#oy").html(_parseInt(_data.top));
+    $("#ow").html(_parseInt(_data.width));
+    $("#oh").html(_parseInt(_data.height));
+    $("#ns").html(_parseInt(window.innerHeight / height));
+    $("#nh").html(_parseInt(source.width / height));
+    $("#vz").html(_parseInt(source.width / vElemIMG.width));
+  }, 200);
+}
+
+var totalUpdater = function() {
+  xDebugUpdate();
+  xNavi.draw();
+  xNavi.rdraw();
+}
+$("#hud span").click(function(){
+  var desc = $(this).data('desc');
+  $("#desc").html(desc);
+});
+
+
+var _parseInt = function(s) {
+  return parseInt(s*100)/100
+}
+
+
+</script>
+</body>
+</html>

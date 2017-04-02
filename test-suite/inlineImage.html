@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+  <title>inline image</title>
+  <style type="text/css">
+  html, body {margin:0;padding:0;line-height:1.25;font-family:sans-serif}
+  h1,h2,h3,h4,h5,h6,p {margin:0;padding:0 1em;line-height:2}
+  span.bt-css {padding:0 5px;border:1px solid #3C3C3C;border-radius:3px;cursor:pointer;}
+  span.bt-css.active {color: #f00}
+  div.in {border-top:1px solid #3C3C3C;padding:25px 1em}
+  h1 {border-bottom:1px solid #1C1C1C;line-height:3}
+  h2 {border-bottom:1px solid #1C1C1C;line-height:2.5}
+  </style>
+  <script
+  src="https://code.jquery.com/jquery-3.2.1.min.js"
+  integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+  crossorigin="anonymous"></script>
+</head>
+<body>
+<h1> inline sample image experiment </h1>
+<h2>Basic </h2>
+<p>Image element without any style in the block item.</p>
+<div style="background:#FFFF00"><img id="sm1"src="gogh.jpg" style='background:#f0f'></div>
+<div class='in' style="background:#F0C0FF" data-target="sm1">
+  around 3px margin added. › using
+  1. <span class='bt-css' data-prop="vertical-align" data-val="middle">vertical-align: middle;</span>
+  <span class="group">
+  2. <span class='bt-css' data-prop="display" data-val="block">display: block</span>
+  2. <span class='bt-css' data-prop="display" data-val="inline-block">display: inline-block</span>
+  </span>
+</div>
+<h2>vertical align</h2>
+<div style="background:#FFFF00"><img id="sm2" src="gogh.jpg" style='background:#f0f'> Lorem Ipsum</div>
+<div class='in' style="background:#F0C0FF" class="" data-target="sm2">
+  vertical-align
+  <span class="group">
+   <span class='bt-css' data-prop="vertical-align" data-val="middle">middle</span>
+   <span class='bt-css' data-prop="vertical-align" data-val="top">top</span>
+   <span class='bt-css' data-prop="vertical-align" data-val="bottom">bottom</span>
+   <span class='bt-css' data-prop="vertical-align" data-val="baseline">baseline</span>
+  </span>
+</div>
+
+
+<script>
+
+$('.bt-css').click(function(){
+  var _self  = $(this);
+  var _groupParent = _self.closest('.group');
+  var target    = $("#" + (_self.data('target') || _self.closest('[data-target]').data('target')));
+  var property = _self.data('prop') || _self.closest('[data-prop]').data('prop');
+  var value  = _self.data('val');
+  if (_groupParent.length) {
+    _groupParent.find('.bt-css').not(_self).each(function(i, e){
+      var item = $(e);
+      var _tg = $("#" + (item.data('target') || item.closest('[data-target]').data('target')));
+      var _prop = item.data('prop') || item.closest('[data-prop]').data('prop');
+      _tg.css(item.data('prop'), '');
+      item.removeClass('active');
+    });
+  }
+  if (_self.hasClass('active')) target.css(property, '');
+  else target.css(property, value);
+  _self.toggleClass('active');
+
+});
+
+</script>
+</body>
+</html>

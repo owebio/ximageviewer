@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge;" />
   <meta name="viewport" content="width=device-width, user-scalable=no">
-  <title> ximageviewer </title>
+  <title> xViewer </title>
   <meta http-equiv="X-UA-Compatible" content="IE=11; IE=10; IE=9;"/>
   <script
   src="https://code.jquery.com/jquery-3.2.1.min.js"
@@ -16,125 +16,336 @@
   @import url(//fonts.googleapis.com/earlyaccess/notosanskr.css); /* 'Noto Sans KR' */
   @import url(//fonts.googleapis.com/css?family=Roboto:100,400); /* 'Roboto' */
 
-  html, body, #wrap {margin:0;padding:0;height:100%}
+  html, body, #wrap {margin:0;padding:0;height:100%;width:100%;}
   body {
-   background: #000;
-   background: linear-gradient(to left, #232526, #141414);
-   font-family: 'Noto Sans KR', sans-serif;
-   -webkit-overflow-scrolling: touch;
-   color: #fff;
+    background: #000;
+    background: linear-gradient(to left, #232526, #141414);
+    font-family: 'Noto Sans KR', sans-serif;
+    -webkit-overflow-scrolling: touch;
+    color: #fff;
   }
-   #wrapper {position:absolute;height:100%;z-index:10;width:100%}
-   #wrapper {overflow:hidden}
-   #nada {position:absolute;z-index:10}
-   img {display:none}
-   img.active {display:block}
+  table {width:100%;border-collapse:collapse;font-size:12px}
 
-  #hud {position:fixed;z-index:1000;top:0;left:0;line-height:42px;overflow:auto;box-sizing:border-box;padding:5px 10px;color:#EBEBEB;text-shadow:1px 1px #000, 0 0 30px #000;font-size:18px}
-  #hud span {float:left;width:42px;font-weight:800;text-align:center;cursor:pointer;background:RGBA(0,0,0,0.1);}
-  #hud span:hover {background:RGBA(0,0,0,0.25)}
-  #hud span.active {background:RGBA(0,0,0,0.3);color:#fff}
-  #desc {font-family:'Roboto';clear:left;text-shadow:1px 1px #000;line-height:1.5}
+  #xiv-view   {position:absolute;top:0;left:0;z-index:10;width:100%;height:100%;overflow:hidden}
+  #xiv-screen {position:absolute;top:0;left:0;z-index:10;min-width:100%;min-height:100%;transform-origin:50% 50%}
+  #xiv-image {position:relative;height:100%;width:100%;background-repeat:no-repeat;background-position:50% 50%;}
+  #xiv-ghost-image {display:block;min-height:100%;min-width:100%;width:100%;height:100%;/*visibility:hidden;*/opacity:0;pointers-event:none}
+  /* visibility is better than opacity, but it does not respond to user's request */
+  /*#xiv-image  {top:50%;left:50%;transform:translate(-50%, -50%)}*/
+  #xiv-image  {transition:all 300ms ease}
+  #xiv-view.top    #xiv-image {background-position-y:top}
+  #xiv-view.middle #xiv-image {background-position-y:center}
+  #xiv-view.bottom #xiv-image {background-position-y:bottom}
+  #xiv-view.left   #xiv-image {background-position-x:left}
+  #xiv-view.center #xiv-image {background-position-x:center}
+  #xiv-view.right  #xiv-image {background-position-x:right}
+  #xiv-view.bWidth  #xiv-screen {min-width:0}
+  #xiv-view.bHeight #xiv-screen {min-height:0}
+  #xiv-view.size-cover #xiv-screen,
+  #xiv-view.size-contain #xiv-screen {width:100% !important; height:100% !important}
+  #xiv-view.size-cover #xiv-image {width:100%;height:100%;background-size:cover}
+  #xiv-view.size-contain #xiv-image {width:100%;height:100%;background-size:contain}
+  #xiv-view.size-fixed-height #xiv-screen {height:100vh !important;width:100vw !important}
+  #xiv-view.size-fixed-width #xiv-screen {width:100vw !important;height:100vh !important}
+  #xiv-view.size-fixed-height #xiv-image {width:100%;height:100%;background-size:auto 100%}
+  #xiv-view.size-fixed-width #xiv-image {height:100%;height:100%;background-size:100% auto}
 
-  #title {font-family:'Roboto';font-weight:100;font-size:32px;line-height:40px;}
-  #exp {position:absolute;left:0;bottom:0;margin:0 15px 20px;padding:0 15px;font-size:14px;line-height:1.25;font-family:'Roboto'}
-  #exp {border-left:5px solid #fff;float:left;box-sizing:border-box;text-shadow:1px 1px #000;}
-  #exp {-webkit-backface-visibility: hidden;}
+   /*MISC*/
+  #title {position:absolute;top:0;left:0;padding:15px;z-index:1000;text-shadow:1px 1px #000, 0 0 15px #000}
+  #hud {position:absolute;z-index:1000;top:60px;left:0;line-height:52px;box-sizing:border-box;padding:5px 10px;color:#EBEBEB;text-shadow:1px 1px #000, 0 0 30px #000;font-size:18px;}
+  #hud span {float:left;display:block;width:52px;font-weight:800;text-align:center;cursor:pointer;background:RGBA(0,0,0,0.1);}
+  #hud span {transition:all 300ms ease}
+  #hud span:hover {background:RGBA(255,255,255,0.25)}
+  #hud span.active {background:RGBA(0,0,0,0.5);color:#fff;font-weight:800}
+  #desc {font-family:'Roboto';clear:left;text-shadow:1px 1px #000;line-height:2}
+  #title {font-family:'Roboto';font-weight:100;font-size:32px;line-height:48px;}
+  #hud-bts {clear:both;}
+  #hud-bts > div {clear:both;overflow:auto}
+  #hud-bts span {font-size:12px;width:52px;}
+  #hud-bts span.active {color:#000;background:#fff;text-shadow:none}
+  #info {position:fixed;bottom:15px;right:15px;z-index:300;pointer-events:none}
+  #info th {width: 80px}
+  #hud div.opt-div {margin-top:10px;clear:both}
+  .clr {clear:both}
+  #hud-bts div.po span {opacity:1}
+  .bWidth #hud-bts div.po span {opacity:0.25}
+  .bWidth #hud-bts div.po span.bv {opacity:1}
+  .bHeight #hud-bts div.po span {opacity:0.25}
+  .bHeight #hud-bts div.po span.bh {opacity:1}
+  .bWidth.bHeight #hud-bts div.po span {opacity:0.25}
   </style>
+  <!--
+
+  아이디어 : 가운데 수직ㆍ수평 정렬과 스크롤 문제
+
+  이중 WRAP사용하여 wrap에다 적용 시키는 방법
+
+  -->
 </head>
 <body>
+<div id="title">xViewer</div>
 <div id="hud">
-  <div id="title">xViewer Controller</div>
-  <span id="prev" data-desc="Prev"> <i class="fa fa-chevron-left"></i> </span>
-  <span id="toReset" data-desc="Reset"> X </span>
-  <span id="toCover" data-desc="Cover Size"> C </span>
-  <span id="toFull" data-desc="Extend to nearest edge If bigger than viewport"><i class="fa fa-expand"></i></span>
-  <span id="toOrigin" data-desc="Original Size"> O </span>
-  <span id="toZoom05" data-desc="Zoom to 50%"> 50% </span>
-  <span id="next" data-desc="Next"> <i class="fa fa-chevron-right"></i> </span>
-  <div id="desc">&nbsp;</div>
-</div>
-
-<div id="wrapper">
-  <div id="nada">
-    <img src="../sample/sample_barcelona.jpg" class="active">
-    <img src="../sample/sample_cuba.jpg">
-    <img src="../sample/sample_paris.jpg">
-    <img src="../sample/HongKong.jpg">
+  <div>
+    <span id="prev" data-desc="Prev"><i class="fa fa-arrow-circle-left"></i></span>
+    <span id="next" data-desc="Next"><i class="fa fa-arrow-circle-right"></i></span>
+    <div class="clr"></div>
+  </div>
+  <div id="hud-bts">
+    <div class="po">
+      <span data-p="top left">↖</span>
+      <span data-p="top center" class="bv"><i class="fa fa-chevron-up"></i></span>
+      <span data-p="top right">↗</span>
+    </div>
+    <div class="po">
+      <span data-p="middle left" class="bh"><i class="fa fa-chevron-left"></i></span>
+      <span data-p="middle center" class="bv bh">C</span>
+      <span data-p="middle right" class="bh"><i class="fa fa-chevron-right"></i></span>
+    </div>
+    <div class="po">
+      <span data-p="bottom left">↙</span>
+      <span data-p="bottom center" class="bv"><i class="fa fa-chevron-down"></i></span>
+      <span data-p="bottom right">↘</span>
+    </div>
+    <div class="opt-div">
+      <span id="so" class="active">O</span>
+      <span id="scv"><i class="fa fa-arrows-alt"></i></span>
+      <span id="sct"><i class="fa fa-arrows"></i></span>
+    </div>
+    <div>
+      <span id="scw"><i class="fa fa-arrows-h"></i></span>
+      <span id="sch"><i class="fa fa-arrows-v"></i></span>
+    </div>
+    <div class="opt-div">
+      <span id="zm"><i class="fa fa-search-minus"></i></span>
+      <span id="zi" class="active">x1</span>
+      <span id="zp"><i class="fa fa-search-plus"></i></span>
+    </div>
   </div>
 </div>
 
-<div id="exp">
-<!--
-<b>PRO</b> : Light and Easy. No script. <br/>
-<b>CON</b> : Hard to center image without pre-checking size if one side is bigger than viewport. <br/>
-<u>Using this way for extended, cover size.</u>
--->
+<div id="info">
+  <table>
+    <tr><th>width</th><td id="iw"></td><th>height</th><td id="ih"></td></tr>
+    <tr><th>x</th><td id="ix"></td><th>y</th><td id="iy"></td></tr>
+  </table>
+</div>
+
+<div id="xiv-view"> <!-- wrapper -->
+  <div id="xiv-screen"> <!-- viewport -->
+    <div id="xiv-image"> <!-- image element -->
+      <img id="xiv-ghost-image"> <!-- ghost element for Semantic web -->
+    </div>
+  </div>
 </div>
 
 <script>
-var reset = function(){
-  $("#wrapper").scrollTop(0).scrollLeft(0);
-  $("#wrapper").get(0).className = '';
-  $("#wrapper img.active").get(0).className = '';
-  $("#desc").html("&nbsp;");
+var imageCollection = [
+  {title: 'El Gazpacho', url: "../sample/sample_spanish_dish.jpg"},
+  {title: 'Cuba', url: "../sample/sample_cuba.jpg"},
+  {title: 'Thailand', url: "../sample/sample_thailand.jpg"},
+  {title: 'HongKong', url: "../sample/hongkong.jpg"},
+  {title: 'Ankor Wat', url: "../sample/sample_cambodia.jpg"},
+  {title: 'Seoul', url: "../sample/sample_mask.jpg"},
+  {title: 'Casa Milà', url: "../sample/sample_barcelona.jpg"},
+  {title: 'La Grande Arche', url: "../sample/sample_paris.jpg"},
+  {title: 'Tokyo Metropolitan Government', url: "../sample/sample_tokyo.jpg"},
+  {title: 'Sample Icon', url: "../sample/sample_icon.jpg"},
+  {title: 'Friendship', url: "../sample/sample_webtoon.jpg", copyright : "mrlobenstein.com"}
+]
+
+var rootElem   = $("#xiv-view");
+var imgElem    = $("#xiv-image");
+var screenElem = $("#xiv-screen");
+var ghostElem = $("#xiv-ghost-image");
+var source = {
+  url    : undefined,
+  width  : undefined,
+  height : undefined
+}
+var xLoader = function(src) {
+  iScroll.scrollTo(0,0);
+  iScroll.zoom(0);
+  var _img = new Image();
+  source.url = src;
+  _img.onload = function() {
+    var width  = source.width  = this.width;
+    var height = source.height = this.height;
+    imgElem.css('background-image', 'url(' + src + ')');
+    //imgElem.css('width',  width);
+    //imgElem.css('height', height);
+    screenElem.css('width',  width + "px");
+    screenElem.css('height', height + "px");
+    ghostElem[0].src = src;
+    var _data = screenElem[0].getBoundingClientRect();
+    iScroll.zoom(1);
+    var centerX = (width > window.innerWidth) ? (window.innerWidth - width) / 2 : 0;
+    var centerY = (height > window.innerHeight) ? (window.innerHeight - height) / 2 : 0;
+    iScroll.scrollTo(centerX, centerY)
+    iScroll.refresh();
+    infoUpdater();
+  }
+  _img.src =src;
 }
 
-$("#prev").click(function(){
-  var active = $("img.active");
-  reset();
-  if (active.prev().length) active.prev().addClass('active');
-  else $("img").last().addClass('active');
-});
-$("#next").click(function(){
-  var active = $("img.active");
-  reset();
-  if (active.next().length) active.next().addClass('active');
-  else $("img").last().addClass('active');
+iScroll = new IScroll('#xiv-view', {
+  zoom: true,
+  mouseWheel: true,
+  scrollX: true,
+  freeScroll: true,
+  startZoom: 1,
+  zoomMax: 8,
+  wheelAction: 'zoom'
 });
 
-$("#toCover").click(function(){
-  var elem = $("img.active");
-  reset();
-  $("#wrap").addClass('toCover');
+var adjustMargin = function() {
+  if (iScroll.scale * source.width > window.innerWidth) {
+    rootElem.addClass('bWidth');
+    $("body").addClass('bWidth');
+  } else {
+    rootElem.removeClass('bWidth');
+    $("body").removeClass('bWidth');
+    /*
+    var minWidth = window.innerWidth/iScroll.scale  + "px";
+    var preMinWidth = screenElem.css('min-width');
+    if (preMinWidth != minWidth) {
+      screenElem.css('min-width',  minWidth  + "px");
+      console.log(preMinWidth, minWidth);
+      //iScroll.scrollTo(0, iScroll.y);
+    }*/
+  }
+  if (iScroll.scale * source.height > window.innerHeight) {
+    rootElem.addClass('bHeight');
+    $("body").addClass('bHeight');
+  } else {
+    rootElem.removeClass('bHeight');
+    $("body").removeClass('bHeight');
+    /*
+    var minHeight = window.innerHeight/iScroll.scale  + "px";
+    var preMinHeight = screenElem.css('min-height');
+    if (preMinHeight != minHeight) {
+      screenElem.css('min-height',  minHeight + "px");
+    }*/
+  }
+  iScroll.refresh();
+}
+var current = 0;
+xLoader(imageCollection[0].url);
+
+$('#prev').click(function() {
+  current = (current - 1 < 0 ) ? imageCollection.length - 1 : current;
+  xLoader(imageCollection[--current].url);
+  infoUpdater();
 });
-$("#toReset").click(function(){
-  reset();
-});
-$("#toFull").click(function(){
-  reset();
-  $("#wrap").addClass('toFull');
-});
-$("#toOrigin").click(function(){
-  reset();
-  $("#wrap").addClass('toOrigin');
-});
-$("#toZoom05").click(function(){
-  reset();
-  $("#wrap").addClass('toZoom05');
+$('#next').click(function() {
+  current = (current + 1 == imageCollection.length ) ? 0 : current + 1;
+  xLoader(imageCollection[current].url);
+  infoUpdater();
 });
 
-$("#hud span").click(function(){
-  $("#hud span").removeClass('active');
-  $(this).addClass('active');
-  var desc = $(this).data('desc');
-  $("#desc").html(desc);
+var setPosition = function(type, elem) {
+  if ("top middle bottom".split(' ').indexOf(type) > -1) {
+    $("#pt, #pm, #pb").removeClass('active');
+    rootElem.removeClass('top middle bottom').addClass(type);
+    $(elem).addClass('active');
+  } else {
+    $("#pl, #pc, #pr").removeClass('active');
+    rootElem.removeClass('left center right').addClass(type);
+    $(elem).addClass('active');
+  }
+}
+$(".po span").click(function(){
+  rootElem.removeClass('left center right top bottom middle');
+  if (!$(this).hasClass('active')) {
+    $(".po span").removeClass('active');
+    rootElem.addClass($(this).data('p'));
+  } else {
+  }
+  $(this).toggleClass('active');
+});
+$("#px").click(function(){
+  rootElem.removeClass('top middle bottom left center right');
+  $("#pt, #pm, #pb, #pl, #pc, #pr").removeClass('active');
 });
 
-$(document).ready(function() {
-  setTimeout(function() {
-    myScroll = new IScroll('#wrapper', {
-      zoom: true,
-      mouseWheel: true,
-      scrollX: true,
-      freeScroll: true,
-      wheelAction: 'zoom'
-    });
-  }, 3000);
+$("#pt").click(function(){setPosition('top', this);});
+$("#pm").click(function(){setPosition('middle', this);});
+$("#pb").click(function(){setPosition('bottom', this);});
+$("#pl").click(function(){setPosition('left', this);});
+$("#pc").click(function(){setPosition('center', this);});
+$("#pr").click(function(){setPosition('right', this);});
 
+
+var setSize = function(type, elem) {
+  $("#so, #sct, #scv, #scw, #sch").removeClass('active');
+  rootElem.removeClass('size-cover size-contain size-fixed-width size-fixed-height');
+  rootElem.addClass(type);
+  $(elem).addClass('active');
+  iScroll.zoom(1);
+  iScroll.scrollTo(0,0);
+  iScroll.refresh();
+  infoUpdater();
+}
+$("#so").click(function(){
+  iScroll.options.zoom = true;
+  iScroll.options.scrollX = true;
+  iScroll.options.scrollY = true;
+  setSize('', this);
+});
+$("#scv").click(function(){
+  setSize('size-cover', this);
+    iScroll.options.zoom = false;
+    iScroll.options.scrollX = false;
+    iScroll.options.scrollY = false;
+  iScroll.refresh();
+});
+$("#sct").click(function(){
+  setSize('size-contain', this);
+    iScroll.options.zoom = false;
+    iScroll.options.scrollX = false;
+    iScroll.options.scrollY = false;
+});
+$("#scw").click(function(){
+  setSize('size-fixed-width', this);
+    iScroll.options.zoom = false;
+    iScroll.options.scrollX = false;
+    iScroll.options.scrollY = false;
+});
+$("#sch").click(function(){
+  setSize('size-fixed-height', this);
+    iScroll.options.zoom = false;
+    iScroll.options.scrollX = false;
+    iScroll.options.scrollY = false;
+});
+$("#zp").click(function(){
+   var zoom = _int(Math.min(iScroll.scale+0.3, 8));
+   iScroll.zoom(zoom);
+   $("#zi").html('x'+zoom);
+});
+$("#zm").click(function(){
+   var zoom =  _int(Math.max(iScroll.scale-0.3, 1));
+   iScroll.zoom(zoom);
+   $("#zi").html('x'+zoom);
+});
+$("#zi").click(function(){
+   iScroll.zoom(1);
+   $("#zi").html('x'+1);
 });
 
-
+var _int = function(s) {return parseInt(s*100)/100}
+var infoUpdater = function() {
+  var _data = screenElem[0].getBoundingClientRect();
+  $("#iw").html(_int(_data.width));
+  $("#ih").html(_int(_data.height));
+  $("#ix").html(_int(_data.left));
+  $("#iy").html(_int(_data.top));
+   $("#zi").html('x'+_int(iScroll.scale));
+  adjustMargin();
+}
+iScroll.on('scrollEnd',infoUpdater);
+iScroll.on('zoomEnd',infoUpdater);
+iScroll.on('beforeScrollStart', function(e){
+});
+$(window).resize(infoUpdater);
 </script>
 </body>
 </html>

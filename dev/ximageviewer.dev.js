@@ -110,10 +110,18 @@ var XIV = {
       zoom: true,
       mouseWheel: true,
       scrollX: true,
+      scrollY: true,
+      //startZoom: 1.0005,
+      //zoomMin: 1.0005, 
       freeScroll: true,
       wheelAction: 'zoom'});
+    iScroll.on('scroll', XIV.navDraw);
+    iScroll.on('scrollStart',XIV.navDrawInterval);
     iScroll.on('scrollEnd', XIV.navDraw);
-    iScroll.on('zoomEnd', XIV.navDraw);
+    iScroll.on('zoomEnd', function(){
+      $('#nav-back').css('transition-duration', '100ms')
+    }); 
+    iScroll.on('zoomEnd', XIV.navDraw); // transition-duratio
     $("#viewmode").mousemove(XIV.navDraw);
   }
   /*
@@ -209,21 +217,87 @@ XIV.adjustCover = function() {
 }
 
 /* ORIGINAL MODE */
+var _drawIntervalId;
+
+XIV.navDrawInterval = function() {
+  if (_drawIntervalId) clearInterval(_drawIntervalId);
+  _drawIntervalId = setInterval(function(){
+    XIV.navDraw ();
+  }, 100);
+  return this;
+};
+
 XIV.navDraw   = function() {
   if (XIV.mode != "ORIGINAL") return this;
-  // element.getBoundingClientRect().height
-  var rect    = XIV.navMain.get(0).getBoundingClientRect();
-  var ratio   = Math.max( //it works better when scaled.
+  // element.getBoundingClientRect().height  
+  var _RATIO_SCALE = XIV.iScroll.scale;
+  var body = $("body");
+
+  if (source.height*_RATIO_SCALE < window.innerHeight && source.width*_RATIO_SCALE < window.innerWidth) {
+    if (body.hasClass('xiv-con-sourceSmall')) return true;
+    body.addClass('xiv-con-sourceSmall');
+    return true;
+  }
+  if (body.hasClass('xiv-con-sourceSmall')) body.removeClass('xiv-con-sourceSmall');
+
+
+  var _NAV_IMG = XIV.navElem[0];
+  var _INFO = (XIV.navMain[0]).getBoundingClientRect(); // VIEWERIMAGE INFO
+  var _TOP = _INFO.top, _LEFT = _INFO.left, _WIDTH = _INFO.width, _HEIGHT = _INFO.height;
+  var _RATIO_IMAGE = _NAV_IMG.width / source.width;
+  var _RATIO_BOX   = (_NAV_IMG.width / source.width ) / _RATIO_SCALE;
+  var TOP, LEFT, WIDTH, HEIGHT, TOPSTART, LEFTSTART;
+  if (source.height < window.innerHeight) {
+    TOPSTART = (( ( window.innerHeight - source.height ) / 2 ) * _RATIO_IMAGE ) / _RATIO_SCALE;
+    HEIGHT  = window.innerHeight * _RATIO_IMAGE / _RATIO_SCALE;
+  } else {
+    TOPSTART = 0;
+    HEIGHT = window.innerHeight * _RATIO_BOX;
+  }
+  if (source.width < window.innerWidth) {
+    LEFTSTART = (( ( window.innerWidth - source.width ) / 2 ) * _RATIO_IMAGE ) / _RATIO_SCALE;
+    WIDTH  = window.innerWidth * _RATIO_IMAGE / _RATIO_SCALE;
+  } else {
+    LEFTSTART = 0;
+    WIDTH  = window.innerWidth * _RATIO_BOX;
+  }
+
+  var TOP = - (_TOP / _RATIO_SCALE ) * _RATIO_IMAGE;
+  var LEFT = - (_LEFT / _RATIO_SCALE ) * _RATIO_IMAGE;
+
+/*
+  var targetWidth  = Math.max(source.width, window.innerWidth);
+  var targetHeight = Math.max(source.height, window.innerHeight);
+
+
+  var ratio = XIV.navElem.get(0).offsetWidth / (source.width * XIV.iScroll.scale);
+  topStart = (source.height < window.innerHeight) ? (window.innerHeight - source.height)/2 : 0;
+  leftStart = (source.width < window.innerWidth) ? (source.width - window.innerWidth) : 0;
+
+  /*
+  var navPort = XIV.navPort.get(0);
+  var navBackImage = XIV.navElem.get(0); // "#nav-back-image"
+  //var width = window.innerWidth * ratio + 'px';
+  var __RATIO = navBackImage.width/source.width/XIV.iScroll.scale;
+  var width  = window.innerWidth * __RATIO ;
+  // window.innerHeight * ratio 
+  var height = window.innerHeight * __RATIO ;
+
+  /* SCALE 적용이 원본보다 큰 경우에는 적용이 잘된다. */
+
+  /*
+  var ratio   = Math.max(
     XIV.navElem.get(0).offsetHeight / (source.height * XIV.iScroll.scale),
     XIV.navElem.get(0).offsetWidth  / (source.width * XIV.iScroll.scale)
-  ) ;
-  var top     = rect.top  ;
-  var left    = rect.left ;
+  );*/
+  //var top     = rect.top  ;
+  //var left    = rect.left ;
+  
   var navPort = XIV.navPort.get(0);
-  navPort.style.top    = - top  * ratio + 'px';
-  navPort.style.left   = - left * ratio + 'px';
-  navPort.style.height = window.innerHeight * ratio + 'px';
-  navPort.style.width  = window.innerWidth * ratio + 'px';
+  navPort.style.top    = -TOPSTART  + TOP  + 'px';
+  navPort.style.left   = -LEFTSTART + LEFT + 'px';
+  navPort.style.height = HEIGHT + 'px';
+  navPort.style.width  = WIDTH  + 'px';
 }
 
 /* DESKTOP MOUSE SCROLL */

@@ -1,0 +1,113 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge;" />
+  <meta name="viewport" content="width=device-width, user-scalable=no">
+  <title> View mode </title>
+  <meta http-equiv="X-UA-Compatible" content="IE=11; IE=10; IE=9;"/>
+  <script
+  src="https://code.jquery.com/jquery-3.2.1.min.js"
+  integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+  crossorigin="anonymous"></script>
+  <script src="../dev/iscroll-zoom.js"></script>
+  <script src="https://use.fontawesome.com/d1e0079ea8.js"></script>
+  <style>
+  @import url(//fonts.googleapis.com/earlyaccess/notosanskr.css); /* 'Noto Sans KR' */
+  @import url(//fonts.googleapis.com/css?family=Roboto:100,400); /* 'Roboto' */
+
+  html, body, #wrap {margin:0;padding:0;height:100%;width:100%;}
+  body {
+    background: #000;
+    background: linear-gradient(to left, #232526, #141414);
+    font-family: 'Noto Sans KR', sans-serif;
+    -webkit-overflow-scrolling: touch;
+    color: #fff;
+  }
+  table {width:100%;border-collapse:collapse;font-size:12px}
+
+  #xiv-view   {position:absolute;top:0;left:0;z-index:10;width:100%;height:100%;overflow:hidden}
+  #xiv-screen {position:absolute;top:0;left:0;z-index:10;min-width:100%;min-height:100%;transform-origin:50% 50%}
+  #xiv-image {position:relative;height:100%;width:100%;background-repeat:no-repeat;background-position:50% 50%;}
+  #xiv-ghost-image {display:block;min-height:100%;min-width:100%;width:100%;height:100%;/*visibility:hidden;*/opacity:0;pointers-event:none}
+  /* visibility is better than opacity, but it does not respond to user's request */
+  /*#xiv-image  {top:50%;left:50%;transform:translate(-50%, -50%)}*/
+  #xiv-image  {transition:all 300ms ease}
+  #xiv-view.top    #xiv-image {background-position-y:top}
+  #xiv-view.middle #xiv-image {background-position-y:center}
+  #xiv-view.bottom #xiv-image {background-position-y:bottom}
+  #xiv-view.left   #xiv-image {background-position-x:left}
+  #xiv-view.center #xiv-image {background-position-x:center}
+  #xiv-view.right  #xiv-image {background-position-x:right}
+  #xiv-view.size-cover #xiv-screen,
+  #xiv-view.size-contain #xiv-screen {width:100% !important; height:100% !important}
+  #xiv-view.size-cover #xiv-image {width:100%;height:100%;background-size:cover}
+  #xiv-view.size-contain #xiv-image {width:100%;height:100%;background-size:contain}
+
+   /*MISC*/
+  #title {position:absolute;top:0;left:0;padding:15px;z-index:1000;text-shadow: 1px 1px #000}
+  #hud {position:absolute;z-index:1000;top:60px;left:0;line-height:52px;box-sizing:border-box;padding:5px 10px;color:#EBEBEB;text-shadow:1px 1px #000, 0 0 30px #000;font-size:18px;}
+  #hud span {float:left;display:block;width:52px;font-weight:800;text-align:center;cursor:pointer;background:RGBA(0,0,0,0.1);}
+  #hud span {transition:all 300ms ease}
+  #hud span:hover {background:RGBA(255,255,255,0.25)}
+  #hud span.active {background:RGBA(0,0,0,0.5);color:#fff;font-weight:800}
+  #desc {font-family:'Roboto';clear:left;text-shadow:1px 1px #000;line-height:2}
+  #title {font-family:'Roboto';font-weight:100;font-size:32px;line-height:48px;}
+  #hud-bts {clear:both;}
+  #hud-bts > div {clear:both;overflow:auto}
+  #hud-bts span {font-size:12px;width:52px;}
+  #hud-bts span.active {color:#000;background:#fff;text-shadow:none}
+  #info {position:fixed;bottom:15px;right:15px;z-index:300}
+  #info th {width: 80px}
+  #hud div.opt-div {margin-top:10px;clear:both}
+  .clr {clear:both}
+  #xiv-view {display:none}
+  </style>
+  <!--
+
+  아이디어 : 가운데 수직ㆍ수평 정렬과 스크롤 문제
+
+  이중 WRAP사용하여 wrap에다 적용 시키는 방법
+
+  -->
+</head>
+<body>
+<div id="title">Scale and Size</div>
+<div id="hud">
+</div>
+
+<div id="xiv-view"> <!-- wrapper -->
+  <div id="xiv-screen"> <!-- viewport -->
+    <div id="xiv-image"> <!-- image element -->
+      <img id="xiv-ghost-image"> <!-- invisible element for Semantic web -->
+    </div>
+  </div>
+</div>
+
+<div id="sample" class="t1">
+  <div id="check">check</div>
+</div>
+<style>
+#sample {
+  position:absolute;top:0;left:0;min-width:100%;min-height:100%;background:yellow
+}
+#check {position:absolute;background:green}
+.t1 {
+  width: 100px;
+  height: 200px;
+  transform:scale(1.5);
+  transform-origin:0 0;
+}
+.t1 #check {
+  width: 100px;
+  height: 200px;
+}
+</style>
+
+<script>
+var t = $('#sample')[0].getBoundingClientRect();
+console.log(t);
+</script>
+
+</body>
+</html>

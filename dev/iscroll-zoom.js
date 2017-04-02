@@ -333,7 +333,7 @@ function IScroll (el, options) {
 // INSERT POINT: OPTIONS
 		disablePointer : !utils.hasPointer,
 		disableTouch : utils.hasPointer || !utils.hasTouch,
-		disableMouse : utils.hasPointer || utils.hasTouch,
+		//disableMouse : utils.hasPointer || utils.hasTouch, //##3 for firefox buggy
 		startX: 0,
 		startY: 0,
 		scrollY: true,
@@ -1301,14 +1301,14 @@ IScroll.prototype = {
 		} else if('wheelDelta' in e) {
 			wheelDeltaY = e.wheelDelta / Math.abs(e.wheelDelta);
 		} else if ('detail' in e) {
-			wheelDeltaY = -e.detail / Math.abs(e.wheelDelta);
+			wheelDeltaY = -e.detail / Math.abs(e.detail); //##1 this.zoom(deltaScale, e.pageX, e.pageY, 0);
 		} else {
 			return;
 		}
 
 		deltaScale = this.scale + wheelDeltaY / 5;
 
-		this.zoom(deltaScale, e.pageX, e.pageY, 0);
+		this.zoom(deltaScale, e.pageX, e.pageY, 450); //##2 this.zoom(deltaScale, e.pageX, e.pageY, 0);
 	},
 
 	_initWheel: function () {
