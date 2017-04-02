@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge;" />
   <meta name="viewport" content="width=device-width, user-scalable=no">
-  <title> xViewer </title>
+  <title> xViewer (iScroll) </title>
   <meta http-equiv="X-UA-Compatible" content="IE=11; IE=10; IE=9;"/>
   <script
   src="https://code.jquery.com/jquery-3.2.1.min.js"
@@ -39,8 +39,8 @@
   #xiv-view.left   #xiv-image {background-position-x:left}
   #xiv-view.center #xiv-image {background-position-x:center}
   #xiv-view.right  #xiv-image {background-position-x:right}
-  #xiv-view.bWidth  #xiv-screen {min-width:0}
-  #xiv-view.bHeight #xiv-screen {min-height:0}
+  #xiv-view.bWidth  #xiv-screen {min-width:0 !important}
+  #xiv-view.bHeight #xiv-screen {min-height:0 !important}
   #xiv-view.size-cover #xiv-screen,
   #xiv-view.size-contain #xiv-screen {width:100% !important; height:100% !important}
   #xiv-view.size-cover #xiv-image {width:100%;height:100%;background-size:cover}
@@ -63,8 +63,9 @@
   #hud-bts > div {clear:both;overflow:auto}
   #hud-bts span {font-size:12px;width:52px;}
   #hud-bts span.active {color:#000;background:#fff;text-shadow:none}
-  #info {position:fixed;bottom:15px;right:15px;z-index:300;pointer-events:none}
-  #info th {width: 80px}
+  #info {position:fixed;bottom:15px;right:5px;z-index:300;pointer-events:none}
+  #info th {width: 40px}
+  #info td {width: 50px}
   #hud div.opt-div {margin-top:10px;clear:both}
   .clr {clear:both}
   #hud-bts div.po span {opacity:1}
@@ -83,7 +84,7 @@
   -->
 </head>
 <body>
-<div id="title">xViewer</div>
+<div id="title">xViewer (iScroll)</div>
 <div id="hud">
   <div>
     <span id="prev" data-desc="Prev"><i class="fa fa-arrow-circle-left"></i></span>
@@ -164,7 +165,7 @@ var source = {
 }
 var xLoader = function(src) {
   iScroll.scrollTo(0,0);
-  iScroll.zoom(0);
+  iScroll.zoom(1);
   var _img = new Image();
   source.url = src;
   _img.onload = function() {
@@ -204,6 +205,12 @@ var adjustMargin = function() {
   } else {
     rootElem.removeClass('bWidth');
     $("body").removeClass('bWidth');
+    var minWidth = window.innerWidth/iScroll.scale + "px";
+    var curWidth = screenElem.css('min-width');
+    if (minWidth != curWidth) {
+      screenElem.css('min-width',  window.innerWidth/iScroll.scale);
+      iScroll.scrollTo((window.innerWidth - source.width)/(2 *iScroll.scale), iScroll.y)
+    }
     /*
     var minWidth = window.innerWidth/iScroll.scale  + "px";
     var preMinWidth = screenElem.css('min-width');
@@ -219,6 +226,12 @@ var adjustMargin = function() {
   } else {
     rootElem.removeClass('bHeight');
     $("body").removeClass('bHeight');
+    var minHeight = window.innerHeight/iScroll.scale + "px";
+    var curHeight = screenElem.css('min-height');
+    if (minHeight != curHeight) {
+      screenElem.css('min-height',  window.innerHeight/iScroll.scale);
+      iScroll.scrollTo(iScroll.x, (window.innerHeight - source.height)/(2 *iScroll.scale))
+    }
     /*
     var minHeight = window.innerHeight/iScroll.scale  + "px";
     var preMinHeight = screenElem.css('min-height');
@@ -332,18 +345,33 @@ $("#zi").click(function(){
 });
 
 var _int = function(s) {return parseInt(s*100)/100}
-var infoUpdater = function() {
+var _infoUpdater = function() {
   var _data = screenElem[0].getBoundingClientRect();
   $("#iw").html(_int(_data.width));
   $("#ih").html(_int(_data.height));
   $("#ix").html(_int(_data.left));
   $("#iy").html(_int(_data.top));
-   $("#zi").html('x'+_int(iScroll.scale));
+  $("#zi").html('x'+_int(iScroll.scale));
+}
+var infoUpdater = function() {
+  _infoUpdater();
   adjustMargin();
 }
-iScroll.on('scrollEnd',infoUpdater);
+var _intervalId = undefined;
+iScroll.on('scrollEnd',function() {
+  if (_intervalId) {
+    clearInterval(_intervalId);
+    _intervalId = undefined;
+  }
+  infoUpdater();
+});
 iScroll.on('zoomEnd',infoUpdater);
-iScroll.on('beforeScrollStart', function(e){
+iScroll.on('beforeScrollStart', function(e) {
+  if (_intervalId) {
+    clearInterval(_intervalId);
+    _intervalId = undefined;
+  }
+  _intervalId = setInterval(_infoUpdater, 100)
 });
 $(window).resize(infoUpdater);
 </script>
